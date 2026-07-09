@@ -1,3 +1,5 @@
+'use client';
+
 import { useAppStore } from '../../core/store';
 
 interface MainContentProps {
