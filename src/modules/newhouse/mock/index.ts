@@ -64,7 +64,10 @@ export const mockGetDevelopers = (page: number, pageSize: number, keyword?: stri
   return { list: filtered.slice(start, end), total: filtered.length, page, pageSize };
 };
 
-export const mockGetDeveloperById = (id: string): Developer | undefined => mockDevelopers.find(item => item.id === id);
+export const mockGetDeveloperById = (id: string | number): Developer | undefined => {
+  const stringId = String(id);
+  return mockDevelopers.find(item => item.id === stringId);
+};
 
 export const mockCreateDeveloper = (data: Omit<Developer, 'id' | 'createdAt' | 'updatedAt'>): Developer => {
   const newItem: Developer = { ...data, id: Date.now().toString(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };

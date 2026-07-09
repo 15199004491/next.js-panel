@@ -26,7 +26,7 @@ const columns = [
 
 export default function DeveloperList() {
   const [keyword, setKeyword] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { developers, pagination, loading, error, fetchDevelopers } = useNewhouseStore();
 
   useEffect(() => {
@@ -90,9 +90,12 @@ export default function DeveloperList() {
             <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-700 p-0 h-auto">
               Detail
             </Button>
-            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 p-0 h-auto">
+            <Link 
+              href={`/developers/${developer.id}/edit`}
+              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+            >
               Edit
-            </Button>
+            </Link>
             <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive/80 p-0 h-auto">
               Delete
             </Button>
@@ -124,7 +127,7 @@ export default function DeveloperList() {
             <Search className="w-4 h-4" />
             Search
           </Button>
-          <Button onClick={() => setIsModalOpen(true)}>
+          <Button onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="w-4 h-4" />
             Create
           </Button>
@@ -183,7 +186,7 @@ export default function DeveloperList() {
       </div>
 
       {/* Create Modal */}
-      <CreateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <CreateModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
     </div>
   );
 }
