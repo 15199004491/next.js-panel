@@ -23,6 +23,25 @@ export interface NewhouseFilter {
   status?: string;
 }
 
+export interface Developer {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  entryYears: number;
+  projectsCount: number;
+  rating: number;
+  status: 'active' | 'inactive';
+  remark: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DeveloperFilter {
+  keyword?: string;
+  status?: string;
+}
+
 export interface PaginationResponse<T> {
   list: T[];
   total: number;

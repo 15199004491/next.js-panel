@@ -1,10 +1,12 @@
 import { useState, useCallback } from 'react';
-import type { Newhouse } from '../models';
-import { mockGetNewhouses, mockGetNewhouseById, mockCreateNewhouse, mockUpdateNewhouse, mockDeleteNewhouse } from '../mock';
+import type { Newhouse, Developer } from '../models';
+import { mockGetNewhouses, mockGetNewhouseById, mockCreateNewhouse, mockUpdateNewhouse, mockDeleteNewhouse, mockGetDevelopers, mockGetDeveloperById, mockCreateDeveloper, mockUpdateDeveloper, mockDeleteDeveloper } from '../mock';
 
 export const useNewhouseStore = () => {
   const [newhouses, setNewhouses] = useState<Newhouse[]>([]);
   const [newhouse, setNewhouse] = useState<Newhouse | null>(null);
+  const [developers, setDevelopers] = useState<Developer[]>([]);
+  const [developer, setDeveloper] = useState<Developer | null>(null);
   const [pagination, setPagination] = useState({ total: 0, page: 1, pageSize: 10 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -95,8 +97,95 @@ export const useNewhouseStore = () => {
 
   const clearNewhouse = useCallback(() => setNewhouse(null), []);
 
+  const fetchDevelopers = useCallback(async (page: number, pageSize: number, keyword?: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const response = mockGetDevelopers(page, pageSize, keyword);
+      setDevelopers(response.list);
+      setPagination({ total: response.total, page: response.page, pageSize: response.pageSize });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '获取开发商列表失败');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchDeveloperById = useCallback(async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const item = mockGetDeveloperById(id);
+      if (!item) throw new Error('开发商不存在');
+      setDeveloper(item);
+      return item;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '获取开发商失败');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleCreateDeveloper = useCallback(async (data: Omit<Developer, 'id' | 'createdAt' | 'updatedAt'>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const newItem = mockCreateDeveloper(data);
+      setDevelopers(prev => [newItem, ...prev]);
+      setPagination(prev => ({ ...prev, total: prev.total + 1 }));
+      return newItem;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '创建开发商失败');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleUpdateDeveloper = useCallback(async (id: string, data: Partial<Developer>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const updated = mockUpdateDeveloper(id, data);
+      if (!updated) throw new Error('开发商不存在');
+      setDevelopers(prev => prev.map(item => item.id === id ? updated : item));
+      if (developer?.id === id) setDeveloper(updated);
+      return updated;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '更新开发商失败');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [developer]);
+
+  const handleDeleteDeveloper = useCallback(async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const success = mockDeleteDeveloper(id);
+      if (!success) throw new Error('删除失败');
+      setDevelopers(prev => prev.filter(item => item.id !== id));
+      setPagination(prev => ({ ...prev, total: prev.total - 1 }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '删除开发商失败');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const clearDeveloper = useCallback(() => setDeveloper(null), []);
+
   return {
-    newhouses, newhouse, pagination, loading, error,
+    newhouses, newhouse, developers, developer, pagination, loading, error,
     fetchNewhouses, fetchNewhouseById, handleCreateNewhouse, handleUpdateNewhouse, handleDeleteNewhouse, clearNewhouse,
+    fetchDevelopers, fetchDeveloperById, handleCreateDeveloper, handleUpdateDeveloper, handleDeleteDeveloper, clearDeveloper,
   };
 };
