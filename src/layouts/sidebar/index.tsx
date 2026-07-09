@@ -31,14 +31,26 @@ const iconPaths: Record<string, string> = {
   users: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
 };
 
-function MenuItem({ item }: { item: MenuItem }) {
-  const [isOpen, setIsOpen] = useState(false);
+function MenuItem({ item, openMenus, setOpenMenus }: { item: MenuItem; openMenus: Set<string>; setOpenMenus: React.Dispatch<React.SetStateAction<Set<string>>> }) {
+  const isOpen = openMenus.has(item.name);
+
+  const toggleMenu = () => {
+    setOpenMenus(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(item.name)) {
+        newSet.delete(item.name);
+      } else {
+        newSet.add(item.name);
+      }
+      return newSet;
+    });
+  };
 
   if (item.children && item.children.length > 0) {
     return (
       <li key={item.name}>
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleMenu}
           className="flex items-center justify-between w-full px-4 py-3 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
         >
           <div className="flex items-center gap-3">
@@ -57,6 +69,9 @@ function MenuItem({ item }: { item: MenuItem }) {
               <li key={child.name}>
                 <Link
                   href={child.href || '#'}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
                   className="flex items-center gap-3 px-4 py-2 ml-8 text-gray-500 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,13 +105,14 @@ function MenuItem({ item }: { item: MenuItem }) {
 export default function Sidebar() {
   const { state } = useAppStore();
   const { sidebarOpen } = state;
+  const [openMenus, setOpenMenus] = useState<Set<string>>(new Set(['New Properties']));
 
   return (
     <aside className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-10 ${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'}`}>
       <nav className="p-4">
         <ul className="space-y-1">
           {menuItems.map((item) => (
-            <MenuItem key={item.name} item={item} />
+            <MenuItem key={item.name} item={item} openMenus={openMenus} setOpenMenus={setOpenMenus} />
           ))}
         </ul>
         <div className="mt-8 pt-6 border-t border-gray-200">
