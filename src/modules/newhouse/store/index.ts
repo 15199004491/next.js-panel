@@ -20,7 +20,7 @@ export const useNewhouseStore = () => {
       setNewhouses(response.list);
       setPagination({ total: response.total, page: response.page, pageSize: response.pageSize });
     } catch (err) {
-      setError(err instanceof Error ? err.message : '获取新房列表失败');
+      setError(err instanceof Error ? err.message : 'Failed to fetch newhouses');
     } finally {
       setLoading(false);
     }
@@ -32,11 +32,11 @@ export const useNewhouseStore = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 300));
       const item = mockGetNewhouseById(id);
-      if (!item) throw new Error('新房不存在');
+      if (!item) throw new Error('Newhouse not found');
       setNewhouse(item);
       return item;
     } catch (err) {
-      setError(err instanceof Error ? err.message : '获取新房失败');
+      setError(err instanceof Error ? err.message : 'Failed to fetch newhouse');
       throw err;
     } finally {
       setLoading(false);
@@ -53,7 +53,7 @@ export const useNewhouseStore = () => {
       setPagination(prev => ({ ...prev, total: prev.total + 1 }));
       return newItem;
     } catch (err) {
-      setError(err instanceof Error ? err.message : '创建新房失败');
+      setError(err instanceof Error ? err.message : 'Failed to create newhouse');
       throw err;
     } finally {
       setLoading(false);
@@ -66,12 +66,12 @@ export const useNewhouseStore = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 300));
       const updated = mockUpdateNewhouse(id, data);
-      if (!updated) throw new Error('新房不存在');
+      if (!updated) throw new Error('Newhouse not found');
       setNewhouses(prev => prev.map(item => item.id === id ? updated : item));
       if (newhouse?.id === id) setNewhouse(updated);
       return updated;
     } catch (err) {
-      setError(err instanceof Error ? err.message : '更新新房失败');
+      setError(err instanceof Error ? err.message : 'Failed to update newhouse');
       throw err;
     } finally {
       setLoading(false);
@@ -88,7 +88,7 @@ export const useNewhouseStore = () => {
       setNewhouses(prev => prev.filter(item => item.id !== id));
       setPagination(prev => ({ ...prev, total: prev.total - 1 }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : '删除新房失败');
+      setError(err instanceof Error ? err.message : 'Failed to delete newhouse');
       throw err;
     } finally {
       setLoading(false);
@@ -106,7 +106,7 @@ export const useNewhouseStore = () => {
       setDevelopers(response.list);
       setPagination({ total: response.total, page: response.page, pageSize: response.pageSize });
     } catch (err) {
-      setError(err instanceof Error ? err.message : '获取开发商列表失败');
+      setError(err instanceof Error ? err.message : 'Failed to fetch developers');
     } finally {
       setLoading(false);
     }
@@ -118,11 +118,11 @@ export const useNewhouseStore = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 300));
       const item = mockGetDeveloperById(id);
-      if (!item) throw new Error('开发商不存在');
+      if (!item) throw new Error('Developer not found');
       setDeveloper(item);
       return item;
     } catch (err) {
-      setError(err instanceof Error ? err.message : '获取开发商失败');
+      setError(err instanceof Error ? err.message : 'Failed to fetch developer');
       throw err;
     } finally {
       setLoading(false);
@@ -174,7 +174,7 @@ export const useNewhouseStore = () => {
       setDevelopers(prev => prev.filter(item => item.id !== id));
       setPagination(prev => ({ ...prev, total: prev.total - 1 }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : '删除开发商失败');
+      setError(err instanceof Error ? err.message : 'Failed to fetch developer');
       throw err;
     } finally {
       setLoading(false);

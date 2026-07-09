@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ExternalLink, Star } from 'lucide-react';
+import { Search, ExternalLink, Star, Plus } from 'lucide-react';
 import { useNewhouseStore } from '../../store';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
@@ -120,10 +120,12 @@ export default function DeveloperList() {
               className="w-64 pl-10"
             />
           </div>
-          <Button onClick={handleSearch}>
+          <Button onClick={handleSearch} variant="outline">
+            <Search className="w-4 h-4" />
             Search
           </Button>
           <Button onClick={() => setIsModalOpen(true)}>
+            <Plus className="w-4 h-4" />
             Create
           </Button>
         </div>

@@ -23,29 +23,29 @@ export const validateIDCard = (idCard: string): boolean => {
 };
 
 export const validatePassword = (password: string): { valid: boolean; message: string } => {
-  if (password.length < 8) return { valid: false, message: '密码长度至少8位' };
-  if (!/[a-z]/.test(password)) return { valid: false, message: '密码必须包含小写字母' };
-  if (!/[A-Z]/.test(password)) return { valid: false, message: '密码必须包含大写字母' };
-  if (!/[0-9]/.test(password)) return { valid: false, message: '密码必须包含数字' };
+  if (password.length < 8) return { valid: false, message: 'Password must be at least 8 characters' };
+  if (!/[a-z]/.test(password)) return { valid: false, message: 'Password must contain lowercase letters' };
+  if (!/[A-Z]/.test(password)) return { valid: false, message: 'Password must contain uppercase letters' };
+  if (!/[0-9]/.test(password)) return { valid: false, message: 'Password must contain numbers' };
   return { valid: true, message: '' };
 };
 
 export const validateNumber = (value: string, min?: number, max?: number): { valid: boolean; message: string } => {
   const num = parseFloat(value);
-  if (isNaN(num)) return { valid: false, message: '请输入数字' };
-  if (min !== undefined && num < min) return { valid: false, message: `数值不能小于${min}` };
-  if (max !== undefined && num > max) return { valid: false, message: `数值不能大于${max}` };
+  if (isNaN(num)) return { valid: false, message: 'Please enter a number' };
+  if (min !== undefined && num < min) return { valid: false, message: `Value cannot be less than ${min}` };
+  if (max !== undefined && num > max) return { valid: false, message: `Value cannot be greater than ${max}` };
   return { valid: true, message: '' };
 };
 
 export const validateRequired = (value: string | undefined | null): { valid: boolean; message: string } => {
-  if (!value || value.trim() === '') return { valid: false, message: '此字段为必填项' };
+  if (!value || value.trim() === '') return { valid: false, message: 'This field is required' };
   return { valid: true, message: '' };
 };
 
 export const validateLength = (value: string, min: number, max: number): { valid: boolean; message: string } => {
   const length = value.length;
-  if (length < min) return { valid: false, message: `长度不能少于${min}个字符` };
-  if (length > max) return { valid: false, message: `长度不能超过${max}个字符` };
+  if (length < min) return { valid: false, message: `Length must be at least ${min} characters` };
+  if (length > max) return { valid: false, message: `Length cannot exceed ${max} characters` };
   return { valid: true, message: '' };
 };

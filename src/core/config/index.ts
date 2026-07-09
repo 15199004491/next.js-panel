@@ -1,7 +1,7 @@
 export const appConfig = {
   name: 'Admin Panel',
   version: '1.0.0',
-  description: '后台管理系统',
+  description: 'Admin Panel System',
 };
 
 export const apiConfig = {

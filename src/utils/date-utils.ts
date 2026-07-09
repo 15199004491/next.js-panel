@@ -1,16 +1,16 @@
 export const formatDate = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
 };
 
 export const formatDateTime = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(d);
+  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(d);
 };
 
 export const formatTime = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(d);
+  return new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(d);
 };
 
 export const getRelativeTime = (date: Date | string): string => {
@@ -24,13 +24,13 @@ export const getRelativeTime = (date: Date | string): string => {
   const months = Math.floor(diff / 2629800000);
   const years = Math.floor(diff / 31557600000);
   
-  if (minutes < 1) return '刚刚';
-  if (minutes < 60) return `${minutes}分钟前`;
-  if (hours < 24) return `${hours}小时前`;
-  if (days < 7) return `${days}天前`;
-  if (weeks < 4) return `${weeks}周前`;
-  if (months < 12) return `${months}个月前`;
-  return `${years}年前`;
+  if (minutes < 1) return 'Just now';
+  if (minutes < 60) return `${minutes} minutes ago`;
+  if (hours < 24) return `${hours} hours ago`;
+  if (days < 7) return `${days} days ago`;
+  if (weeks < 4) return `${weeks} weeks ago`;
+  if (months < 12) return `${months} months ago`;
+  return `${years} years ago`;
 };
 
 export const getDaysInMonth = (year: number, month: number): number => new Date(year, month, 0).getDate();
