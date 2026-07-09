@@ -5,7 +5,7 @@ const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableE
     <div className="relative w-full overflow-auto">
       <table
         ref={ref}
-        className={`w-full caption-bottom text-sm ${className || ""}`}
+        className={`w-full caption-bottom text-sm border border-gray-200 ${className || ""}`}
         {...props}
       />
     </div>
@@ -16,7 +16,7 @@ Table.displayName = "Table";
 
 const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <thead ref={ref} className={`border-b ${className || ""}`} {...props} />
+    <thead ref={ref} className={`border-b border-gray-200 ${className || ""}`} {...props} />
   )
 );
 
@@ -34,7 +34,7 @@ const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttribut
   ({ className, ...props }, ref) => (
     <tfoot
       ref={ref}
-      className={`border-t bg-muted/50 font-medium ${className || ""}`}
+      className={`border-t border-gray-200 bg-muted/50 font-medium ${className || ""}`}
       {...props}
     />
   )
@@ -46,7 +46,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
   ({ className, ...props }, ref) => (
     <tr
       ref={ref}
-      className={`border-b transition-colors hover:bg-muted/50 ${className || ""}`}
+      className={`border-b border-gray-200 transition-colors hover:bg-muted/50 ${className || ""}`}
       {...props}
     />
   )

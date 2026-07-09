@@ -11,11 +11,12 @@ import { Badge } from '@/src/ui/badge';
 import { Card, CardContent } from '@/src/ui/card';
 import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
+import CreateModal from '../components/CreateModal';
 
 // 列配置
 const columns = [
-  { key: 'name', label: 'Name', width: 'w-[200px]' },
-  { key: 'entryYears', label: 'Entry Years', width: 'w-24' },
+  { key: 'name', label: 'Name', width: 'w-[300px]' },
+  { key: 'entryYears', label: 'Entry Years', width: 'w-36' },
   { key: 'projectsCount', label: 'Projects', width: 'w-24' },
   { key: 'rating', label: 'Rating', width: 'w-20' },
   { key: 'status', label: 'Status', width: 'w-20' },
@@ -25,6 +26,7 @@ const columns = [
 
 export default function DeveloperList() {
   const [keyword, setKeyword] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { developers, pagination, loading, error, fetchDevelopers } = useNewhouseStore();
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function DeveloperList() {
           </>
         );
       case 'entryYears':
-        return <span className="text-sm">{developer.entryYears} years</span>;
+        return <span className="text-sm">{developer.entryYears}</span>;
       case 'projectsCount':
         return (
           <Link
@@ -121,6 +123,9 @@ export default function DeveloperList() {
           <Button onClick={handleSearch}>
             Search
           </Button>
+          <Button onClick={() => setIsModalOpen(true)}>
+            Create
+          </Button>
         </div>
       </div>
 
@@ -166,12 +171,17 @@ export default function DeveloperList() {
       </Card>
 
       {/* Pagination */}
-      <Pagination
-        page={pagination.page}
-        pageSize={pagination.pageSize}
-        total={pagination.total}
-        onPageChange={handlePageChange}
-      />
+      <div className="flex justify-end">
+        <Pagination
+          page={pagination.page}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          onPageChange={handlePageChange}
+        />
+      </div>
+
+      {/* Create Modal */}
+      <CreateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

@@ -186,6 +186,6 @@ export const useNewhouseStore = () => {
   return {
     newhouses, newhouse, developers, developer, pagination, loading, error,
     fetchNewhouses, fetchNewhouseById, handleCreateNewhouse, handleUpdateNewhouse, handleDeleteNewhouse, clearNewhouse,
-    fetchDevelopers, fetchDeveloperById, handleCreateDeveloper, handleUpdateDeveloper, handleDeleteDeveloper, clearDeveloper,
+    fetchDevelopers, fetchDeveloperById, handleCreateDeveloper, addDeveloper: handleCreateDeveloper, handleUpdateDeveloper, handleDeleteDeveloper, clearDeveloper,
   };
 };
