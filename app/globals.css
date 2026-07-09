@@ -1,26 +1,41 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: oklch(0.9792 0.0029 264.5421);
+  --color-foreground: oklch(0.1448 0 0);
+  --color-card: oklch(1.0000 0 0);
+  --color-card-foreground: oklch(0.1448 0 0);
+  --color-popover: oklch(1.0000 0 0);
+  --color-popover-foreground: oklch(0.1448 0 0);
+  --color-primary: oklch(0.4622 0.2860 264.2491);
+  --color-primary-foreground: oklch(1.0000 0 0);
+  --color-secondary: oklch(0.9698 0.0069 247.8956);
+  --color-secondary-foreground: oklch(0.1448 0 0);
+  --color-muted: oklch(0.9698 0.0069 247.8956);
+  --color-muted-foreground: oklch(0.5544 0.0407 257.4166);
+  --color-accent: oklch(0.9698 0.0069 247.8956);
+  --color-accent-foreground: oklch(0.1448 0 0);
+  --color-destructive: oklch(0.6368 0.2078 25.3313);
+  --color-destructive-foreground: oklch(1.0000 0 0);
+  --color-border: oklch(0.9288 0.0126 255.5078);
+  --color-input: oklch(0.9288 0.0126 255.5078);
+  --color-ring: oklch(0.4745 0.2980 264.2011);
+  
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
