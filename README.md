@@ -22,7 +22,7 @@ This is a modern Real Estate Management System built with **Next.js + Tailwind C
 
 ### Screenshot
 
-![Real Estate Management System](https://neeko-copilot.bytedance.net/api/text2image?prompt=modern%20real%20estate%20management%20dashboard%20admin%20panel%20with%20developer%20list%20table%20and%20navigation%20sidebar%20professional%20UI%20design&image_size=landscape_16_9)
+![alt text](2ee442e0-2d21-4eb7-9c5a-d932fe2aabc5.png)
 
 ## Project Structure
 
