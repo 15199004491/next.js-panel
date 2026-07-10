@@ -30,7 +30,11 @@ This is a modern Real Estate Management System built with **Next.js + Tailwind C
 next.js-panel/
 ├── app/                    # Next.js App Router (Routing)
 │   ├── developers/         # Developer related pages
+│   │   ├── [id]/edit/      # Developer edit/detail page
+│   │   └── page.tsx        # Developer list page
 │   ├── newhouses/          # New property pages
+│   │   ├── [id]/edit/      # Newhouse edit/detail page
+│   │   └── page.tsx        # Newhouse list page
 │   ├── rentals/            # Rental property pages
 │   ├── resale/             # Resale property pages
 │   ├── login/              # Login page
@@ -41,6 +45,8 @@ next.js-panel/
 │   ├── components/         # Reusable components
 │   │   ├── table-skeleton/ # Table skeleton loader
 │   │   ├── pagination/     # Pagination component
+│   │   ├── region-selector/# Region selector component
+│   │   ├── confirm-dialog/ # Confirm dialog component
 │   │   └── ...
 │   ├── layouts/            # Layout components
 │   │   ├── header/         # Top navigation bar
@@ -48,14 +54,40 @@ next.js-panel/
 │   │   └── main-content/   # Main content wrapper
 │   ├── modules/            # Business modules
 │   │   └── newhouse/       # Property management module
-│   │       ├── developer/  # Developer management
-│   │       ├── mock/       # Mock data
-│   │       ├── models/     # Data models
-│   │       └── store/      # State management
+│   │       ├── api/        # API interfaces
+│   │       │   ├── developerApi.ts
+│   │       │   └── newhouseApi.ts
+│   │       ├── components/  # Shared components
+│   │       │   ├── DeveloperForm.tsx
+│   │       │   ├── DeveloperCreateModal.tsx
+│   │       │   ├── NewhouseForm.tsx
+│   │       │   └── NewhouseCreateModal.tsx
+│   │       ├── hooks/       # Custom hooks
+│   │       │   ├── useDeveloper.ts
+│   │       │   └── useNewhouse.ts
+│   │       ├── mock/        # Mock data
+│   │       ├── models/      # Data models
+│   │       ├── pages/       # Page components
+│   │       │   ├── developer/ # Developer pages
+│   │       │   │   ├── List.tsx
+│   │       │   │   └── Edit.tsx
+│   │       │   └── newhouse/   # Newhouse pages
+│   │       │       ├── List.tsx
+│   │       │       └── Edit.tsx
+│   │       └── utils/       # Utility functions
+│   ├── core/               # Core utilities
+│   │   ├── store/          # State management (AppContext)
+│   │   └── ...
+│   ├── config/             # Configuration files
+│   │   └── routeConfig.ts  # Route configuration
+│   ├── data/               # Data files
+│   │   └── regions.ts      # Region tree data
 │   └── ui/                 # UI component library
 │       ├── button/         # Button component
 │       ├── input/          # Input component
 │       ├── card/           # Card component
+│       ├── table/          # Table component
+│       ├── dialog/         # Dialog component
 │       └── ...
 ├── public/                 # Static assets
 ├── next.config.ts          # Next.js configuration

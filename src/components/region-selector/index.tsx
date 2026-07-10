@@ -125,6 +125,7 @@ export default function RegionSelector({ selectedPath = [], onChange, placeholde
     if (!isAllowed) return;
     setInternalPath([]);
     setExpandedIds(new Set());
+    setIsDropdownOpen(false);
     onChange?.([], null);
   };
 
@@ -136,7 +137,7 @@ export default function RegionSelector({ selectedPath = [], onChange, placeholde
         <button
           onClick={() => isAllowed && setIsDropdownOpen(!isDropdownOpen)}
           disabled={!isAllowed}
-          className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors text-left min-w-[200px] ${
+          className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors text-left min-w-[160px] w-fit ${
             isAllowed 
               ? 'bg-gray-50 border-gray-200 hover:bg-gray-100 cursor-pointer' 
               : 'bg-gray-100 border-gray-300 cursor-not-allowed opacity-60'
