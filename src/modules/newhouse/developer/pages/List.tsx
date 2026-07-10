@@ -14,69 +14,104 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
 import CreateModal from '../components/CreateModal';
+import { generateCode, generateContactPhone, generateTotalPayment, generateUpdatedBy } from '@/src/modules/newhouse/mock';
 
-// Column configuration
+// Column configuration with cell renderers
 const columns = [
-  { key: 'code', label: 'Code', width: 'w-28' },
-  { key: 'name', label: 'Name', width: 'w-[300px]' },
-  { key: 'entryYears', label: 'Years', width: 'w-52' },
-  { key: 'projectsCount', label: 'Projects', width: 'w-24' },
-  { key: 'rating', label: 'Rating', width: 'w-20' },
-  { key: 'status', label: 'Status', width: 'w-20' },
-  { key: 'contactPhone', label: 'Contact Phone', width: 'w-44' },
-  { key: 'totalPayment', label: 'Total Payment', width: 'w-36' },
-  { key: 'updatedBy', label: 'Updated', width: 'w-[450px]' },
-  { key: 'remark', label: 'Remark', width: 'w-[400px]' },
-  { key: 'actions', label: 'Actions', width: 'w-32' },
+  { 
+    key: 'code', 
+    label: 'Code', 
+    width: 'w-28',
+    render: (dev: typeof developers[0]) => (
+      <span className="text-sm text-muted-foreground">{generateCode(dev.id)}</span>
+    ),
+  },
+  { 
+    key: 'name', 
+    label: 'Name', 
+    width: 'w-[300px]',
+    render: (dev: typeof developers[0]) => (
+      <>
+        <div className="font-medium">{dev.name}</div>
+        <div className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
+          {dev.description}
+        </div>
+      </>
+    ),
+  },
+  { 
+    key: 'entryYears', 
+    label: 'Years', 
+    width: 'w-52',
+    render: (dev: typeof developers[0]) => <span className="text-sm">{dev.entryYears}</span>,
+  },
+  { 
+    key: 'projectsCount', 
+    label: 'Projects', 
+    width: 'w-24',
+    render: (dev: typeof developers[0]) => (
+      <Link href="/newhouses" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+        {dev.projectsCount}
+        <ExternalLink className="w-3 h-3" />
+      </Link>
+    ),
+  },
+  { 
+    key: 'rating', 
+    label: 'Rating', 
+    width: 'w-20',
+    render: (dev: typeof developers[0]) => (
+      <div className="flex items-center gap-1">
+        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+        <span className="text-sm">{dev.rating}</span>
+      </div>
+    ),
+  },
+  { 
+    key: 'status', 
+    label: 'Status', 
+    width: 'w-20',
+    render: (dev: typeof developers[0]) => (
+      <Badge variant={dev.status === 'active' ? 'success' : 'secondary'}>
+        {dev.status === 'active' ? 'Active' : 'Inactive'}
+      </Badge>
+    ),
+  },
+  { 
+    key: 'contactPhone', 
+    label: 'Contact Phone', 
+    width: 'w-44',
+    render: (dev: typeof developers[0]) => (
+      <span className="text-sm text-muted-foreground">{generateContactPhone(dev.id)}</span>
+    ),
+  },
+  { 
+    key: 'totalPayment', 
+    label: 'Total Payment', 
+    width: 'w-36',
+    render: (dev: typeof developers[0]) => (
+      <span className="text-sm text-muted-foreground">${generateTotalPayment(dev.id)}</span>
+    ),
+  },
+  { 
+    key: 'updatedBy', 
+    label: 'Updated', 
+    width: 'w-[450px]',
+    render: (dev: typeof developers[0]) => (
+      <span className="text-sm text-muted-foreground">{generateUpdatedBy(dev.id)}</span>
+    ),
+  },
+  { 
+    key: 'remark', 
+    label: 'Remark', 
+    width: 'w-[400px]',
+    render: (dev: typeof developers[0]) => (
+      <div className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
+        {dev.remark}
+      </div>
+    ),
+  },
 ];
-
-// Generate 8-digit random code
-const generateCode = (id: string) => {
-  const seed = parseInt(id, 10) || 1;
-  const random = Math.floor(Math.random() * 90000000) + 10000000;
-  return String(random).slice(0, 8);
-};
-
-// Generate contact phone number
-const generateContactPhone = (id: string) => {
-  const areaCode = ['138', '139', '158', '159', '188', '189'][Math.floor(Math.random() * 6)];
-  const middle = String(Math.floor(Math.random() * 9000) + 1000);
-  const last = String(Math.floor(Math.random() * 9000) + 1000);
-  return `${areaCode}${middle}${last}`;
-};
-
-// Generate total payment amount (with comma separator and two decimal places)
-const generateTotalPayment = (id: string) => {
-  const seed = parseInt(id, 10) || 1;
-  const amount = (Math.random() * 99999999 + 100000).toFixed(2);
-  const [integerPart, decimalPart] = amount.split('.');
-  const formattedInteger = parseInt(integerPart).toLocaleString();
-  return `${formattedInteger}.${decimalPart}`;
-};
-
-// Generate update timestamp (YYYY-MM-DD HH:MM:SS)
-const generateUpdatedBy = (id: string) => {
-  const now = new Date();
-  const randomDays = Math.floor(Math.random() * 30);
-  const randomHours = Math.floor(Math.random() * 24);
-  const randomMinutes = Math.floor(Math.random() * 60);
-  const randomSeconds = Math.floor(Math.random() * 60);
-  
-  const date = new Date(now);
-  date.setDate(date.getDate() - randomDays);
-  date.setHours(date.getHours() - randomHours);
-  date.setMinutes(date.getMinutes() - randomMinutes);
-  date.setSeconds(date.getSeconds() - randomSeconds);
-  
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-  
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-};
 
 export default function DeveloperList() {
   const [keyword, setKeyword] = useState('');
@@ -158,89 +193,41 @@ export default function DeveloperList() {
     setBatchDeleteConfirm(false);
   };
 
-  // Render cell content
-  const renderCell = (developer: typeof developers[0], columnKey: string) => {
-    switch (columnKey) {
-      case 'code':
-        return <span className="text-sm text-muted-foreground">{generateCode(developer.id)}</span>;
-      case 'name':
-        return (
-          <>
-            <div className="font-medium">{developer.name}</div>
-            <div className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
-              {developer.description}
-            </div>
-          </>
-        );
-      case 'entryYears':
-        return <span className="text-sm">{developer.entryYears}</span>;
-      case 'projectsCount':
-        return (
-          <Link
-            href="/newhouses"
-            className="inline-flex items-center gap-1 text-primary hover:text-primary/80"
+  const columnsWithActions = [
+    ...columns,
+    {
+      key: 'actions',
+      label: 'Actions',
+      width: 'w-32',
+      render: (dev: typeof developers[0]) => (
+        <div className="flex items-center gap-2">
+          <Link 
+            href={`/developers/${dev.id}/edit?readonly=true`}
+            className="inline-flex items-center gap-1 text-sm text-green-600 hover:text-green-700"
           >
-            {developer.projectsCount}
-            <ExternalLink className="w-3 h-3" />
+            Detail
           </Link>
-        );
-      case 'rating':
-        return (
-          <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-            <span className="text-sm">{developer.rating}</span>
-          </div>
-        );
-      case 'status':
-        return (
-          <Badge variant={developer.status === 'active' ? 'success' : 'secondary'}>
-            {developer.status === 'active' ? 'Active' : 'Inactive'}
-          </Badge>
-        );
-      case 'contactPhone':
-        return <span className="text-sm text-muted-foreground">{generateContactPhone(developer.id)}</span>;
-      case 'totalPayment':
-        return <span className="text-sm text-muted-foreground">${generateTotalPayment(developer.id)}</span>;
-      case 'updatedBy':
-        return <span className="text-sm text-muted-foreground">{generateUpdatedBy(developer.id)}</span>;
-      case 'remark':
-        return (
-          <div className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
-            {developer.remark}
-          </div>
-        );
-      case 'actions':
-        return (
-          <div className="flex items-center gap-2">
-            <Link 
-                href={`/developers/${developer.id}/edit?readonly=true`}
-                className="inline-flex items-center gap-1 text-sm text-green-600 hover:text-green-700"
-              >
-                Detail
-              </Link>
-            <Link 
-              href={`/developers/${developer.id}/edit`}
-              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
-            >
-              Edit
-            </Link>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-destructive hover:text-destructive/80 p-0 h-auto"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteClick(developer.id, developer.name);
-              }}
-            >
-              Delete
-            </Button>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
+          <Link 
+            href={`/developers/${dev.id}/edit`}
+            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+          >
+            Edit
+          </Link>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-destructive hover:text-destructive/80 p-0 h-auto"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteClick(dev.id, dev.name);
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -282,7 +269,7 @@ export default function DeveloperList() {
       <Card>
         <CardContent className="p-0 overflow-x-auto">
           {loading ? (
-            <TableSkeleton columns={columns} />
+            <TableSkeleton columns={columnsWithActions} />
           ) : error ? (
             <div className="p-6 text-center">
               <p className="text-destructive">{error}</p>
@@ -296,7 +283,7 @@ export default function DeveloperList() {
                       <Checkbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
                     </div>
                   </TableHead>
-                  {columns.map((column) => (
+                  {columnsWithActions.map((column) => (
                     <TableHead key={column.key} className={`${column.width} whitespace-nowrap`}>
                       {column.label}
                     </TableHead>
@@ -309,9 +296,9 @@ export default function DeveloperList() {
                     <TableCell className="w-12">
                       <Checkbox checked={selectedIds.has(developer.id)} onCheckedChange={() => handleSelect(developer.id)} />
                     </TableCell>
-                    {columns.map((column) => (
+                    {columnsWithActions.map((column) => (
                       <TableCell key={column.key} className={column.key === 'actions' ? 'whitespace-nowrap' : ''}>
-                        {renderCell(developer, column.key)}
+                        {column.render?.(developer)}
                       </TableCell>
                     ))}
                   </TableRow>
