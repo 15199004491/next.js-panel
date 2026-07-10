@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Save } from 'lucide-react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
 import { Card, CardContent } from '@/src/ui/card';
@@ -12,7 +12,9 @@ import type { Developer } from '../../models';
 export default function DeveloperEdit() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = params.id as string;
+  const readonly = searchParams.get('readonly') === 'true';
   
   const { developer, loading, error, fetchDeveloperById, handleUpdateDeveloper } = useNewhouseStore();
   
@@ -131,14 +133,15 @@ export default function DeveloperEdit() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Name <span className="text-red-500">*</span>
+                  Name {!readonly && <span className="text-red-500">*</span>}
                 </label>
                 <Input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => !readonly && setFormData({ ...formData, name: e.target.value })}
                   placeholder="Enter developer name"
-                  required
+                  required={!readonly}
+                  disabled={readonly}
                 />
               </div>
               <div>
@@ -148,8 +151,9 @@ export default function DeveloperEdit() {
                 <Input
                   type="url"
                   value={formData.logo}
-                  onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
+                  onChange={(e) => !readonly && setFormData({ ...formData, logo: e.target.value })}
                   placeholder="https://example.com/logo.png"
+                  disabled={readonly}
                 />
               </div>
             </div>
@@ -161,8 +165,9 @@ export default function DeveloperEdit() {
               <textarea
                 className="flex h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) => !readonly && setFormData({ ...formData, description: e.target.value })}
                 placeholder="Enter description"
+                disabled={readonly}
               />
             </div>
 
@@ -175,8 +180,9 @@ export default function DeveloperEdit() {
                   type="number"
                   min="0"
                   value={formData.entryYears}
-                  onChange={(e) => setFormData({ ...formData, entryYears: e.target.value })}
+                  onChange={(e) => !readonly && setFormData({ ...formData, entryYears: e.target.value })}
                   placeholder="0"
+                  disabled={readonly}
                 />
               </div>
               <div>
@@ -187,8 +193,9 @@ export default function DeveloperEdit() {
                   type="number"
                   min="0"
                   value={formData.projectsCount}
-                  onChange={(e) => setFormData({ ...formData, projectsCount: e.target.value })}
+                  onChange={(e) => !readonly && setFormData({ ...formData, projectsCount: e.target.value })}
                   placeholder="0"
+                  disabled={readonly}
                 />
               </div>
             </div>
@@ -204,8 +211,9 @@ export default function DeveloperEdit() {
                   max="5"
                   step="0.1"
                   value={formData.rating}
-                  onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
+                  onChange={(e) => !readonly && setFormData({ ...formData, rating: e.target.value })}
                   placeholder="0.0"
+                  disabled={readonly}
                 />
               </div>
               <div>
@@ -215,7 +223,8 @@ export default function DeveloperEdit() {
                 <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
+                  onChange={(e) => !readonly && setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
+                  disabled={readonly}
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
@@ -230,21 +239,24 @@ export default function DeveloperEdit() {
               <textarea
                 className="flex h-16 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 value={formData.remark}
-                onChange={(e) => setFormData({ ...formData, remark: e.target.value })}
+                onChange={(e) => !readonly && setFormData({ ...formData, remark: e.target.value })}
                 placeholder="Enter remark"
+                disabled={readonly}
               />
             </div>
 
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={handleCancel}>
-                <ArrowLeft className="w-4 h-4" />
-                Back
-              </Button>
-              <Button onClick={handleSubmit}>
-                <Save className="w-4 h-4" />
-                Save Changes
-              </Button>
-            </div>
+            {!readonly && (
+              <div className="flex justify-end gap-3">
+                <Button variant="outline" onClick={handleCancel}>
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </Button>
+                <Button onClick={handleSubmit}>
+                  <Save className="w-4 h-4" />
+                  Save Changes
+                </Button>
+              </div>
+            )}
 
             <input type="submit" className="hidden" />
           </form>
