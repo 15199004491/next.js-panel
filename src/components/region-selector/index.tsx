@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { regionTree, type Region } from '../../data/regions';
+import { isRegionSwitchAllowed } from '../../config/routeConfig';
 
 interface TreeNodeProps {
   region: Region;
@@ -75,6 +77,9 @@ interface RegionSelectorProps {
 }
 
 export default function RegionSelector({ selectedPath = [], onChange, placeholder = 'Select Region' }: RegionSelectorProps) {
+  const pathname = usePathname();
+  const isAllowed = isRegionSwitchAllowed(pathname || '');
+  
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [internalPath, setInternalPath] = useState<string[]>(selectedPath);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -95,6 +100,7 @@ export default function RegionSelector({ selectedPath = [], onChange, placeholde
   }, [selectedPath]);
 
   const handleSelect = (path: string[], region: Region) => {
+    if (!isAllowed) return;
     setInternalPath(path);
     onChange?.(path, region);
     if (!region.children || region.children.length === 0) {
@@ -103,6 +109,7 @@ export default function RegionSelector({ selectedPath = [], onChange, placeholde
   };
 
   const handleExpand = (id: string) => {
+    if (!isAllowed) return;
     setExpandedIds((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
@@ -115,6 +122,7 @@ export default function RegionSelector({ selectedPath = [], onChange, placeholde
   };
 
   const handleReset = () => {
+    if (!isAllowed) return;
     setInternalPath([]);
     setExpandedIds(new Set());
     onChange?.([], null);
@@ -126,28 +134,37 @@ export default function RegionSelector({ selectedPath = [], onChange, placeholde
     <div className="relative" ref={dropdownRef}>
       <div className="flex items-center gap-2">
         <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors text-left min-w-[200px]"
+          onClick={() => isAllowed && setIsDropdownOpen(!isDropdownOpen)}
+          disabled={!isAllowed}
+          className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors text-left min-w-[200px] ${
+            isAllowed 
+              ? 'bg-gray-50 border-gray-200 hover:bg-gray-100 cursor-pointer' 
+              : 'bg-gray-100 border-gray-300 cursor-not-allowed opacity-60'
+          }`}
         >
-          <span className="text-sm text-gray-700 truncate">{displayText}</span>
-          <svg
-            className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <span className={`text-sm truncate ${isAllowed ? 'text-gray-700' : 'text-gray-500'}`}>{displayText}</span>
+          {isAllowed && (
+            <svg
+              className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          )}
+        </button>
+        {isAllowed && (
+          <button
+            onClick={handleReset}
+            className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Reset"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        <button
-          onClick={handleReset}
-          className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-          title="Reset"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-        </button>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {isDropdownOpen && (
