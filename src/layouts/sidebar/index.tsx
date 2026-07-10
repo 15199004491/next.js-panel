@@ -115,8 +115,8 @@ export default function Sidebar() {
 
   return (
     <aside className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-all duration-300 z-10 ${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'}`}>
-      <nav className="p-4">
-        <ul className="space-y-1">
+      <nav className="flex flex-col h-full p-4">
+        <ul className="space-y-1 flex-1">
           {menuItems.map((item) => (
             <MenuItem key={item.name} item={item} openMenus={openMenus} setOpenMenus={setOpenMenus} currentPath={currentPath} />
           ))}
