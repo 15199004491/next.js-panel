@@ -40,7 +40,11 @@ export const mockGetNewhouses = (page: number, pageSize: number, keyword?: strin
   let filtered = mockNewhouses;
   if (keyword) {
     const lowerKeyword = keyword.toLowerCase();
-    filtered = filtered.filter(item => item.name.toLowerCase().includes(lowerKeyword) || item.address.toLowerCase().includes(lowerKeyword));
+    filtered = filtered.filter(item => 
+      item.name.toLowerCase().includes(lowerKeyword) || 
+      item.address.toLowerCase().includes(lowerKeyword) ||
+      item.developer.toLowerCase().includes(lowerKeyword)
+    );
   }
   if (region && region.length > 0) {
     filtered = filtered.filter(item => {

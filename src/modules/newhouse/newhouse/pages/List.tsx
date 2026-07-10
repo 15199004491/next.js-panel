@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Search, DollarSign, Plus, Trash2 } from 'lucide-react';
 import { useNewhouse } from '@/src/modules/newhouse/hooks/useNewhouse';
 import { useAppStore } from '@/src/core/store';
@@ -105,7 +106,9 @@ const columns = [
 ];
 
 export default function NewhouseList() {
-  const [keyword, setKeyword] = useState('');
+  const searchParams = useSearchParams();
+  const initialKeyword = searchParams?.get('developer') || '';
+  const [keyword, setKeyword] = useState(initialKeyword);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
   const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
@@ -129,7 +132,7 @@ export default function NewhouseList() {
   } = useNewhouse();
 
   useEffect(() => {
-    fetchNewhouses(pagination.page, pagination.pageSize, keyword, selectedRegion);
+    fetchNewhouses(1, pagination.pageSize, initialKeyword || keyword, selectedRegion);
   }, []);
 
   useEffect(() => {

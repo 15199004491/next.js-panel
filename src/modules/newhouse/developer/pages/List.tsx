@@ -52,7 +52,7 @@ const columns = [
     label: 'Projects', 
     width: 'w-24',
     render: (dev: Developer) => (
-      <Link href="/newhouses" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+      <Link href={`/newhouses?developer=${encodeURIComponent(dev.name)}`} className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
         {dev.projectsCount}
         <ExternalLink className="w-3 h-3" />
       </Link>
