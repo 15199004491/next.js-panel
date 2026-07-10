@@ -2,13 +2,16 @@
 
 ## Project Overview
 
-This is a modern Real Estate Management System built with **Next.js + Tailwind CSS + TypeScript**. The system provides a comprehensive backend management interface for managing property listings including new properties, resale properties, and rental properties.
+https://next-js-panel-tszd.vercel.app/
+
+This is a modern Real Estate Management System built with **Next.js + Tailwind CSS + TypeScript + ShanCn**. The system provides a comprehensive backend management interface for managing property listings including new properties, resale properties, and rental properties.
 
 ### Technology Stack
 
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS 4
+- **Component Library**: shadcn/ui
 - **State Management**: React Hooks
 - **Icons**: Lucide React
 
@@ -19,6 +22,11 @@ This is a modern Real Estate Management System built with **Next.js + Tailwind C
 - 🔍 **Region Filtering**: Infinite-level region tree selection for location-based filtering
 - 📱 **Responsive Layout**: Modern admin panel with mobile support
 - 🔐 **User Authentication**: Login/logout functionality
+
+### Live Demo
+
+- **Development**: http://localhost:3000
+- **Production**: [Deploy to Vercel](https://next-js-panel-tszd.vercel.app)
 
 ### Screenshot
 

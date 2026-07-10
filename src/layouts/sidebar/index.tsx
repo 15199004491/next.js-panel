@@ -34,7 +34,9 @@ const iconPaths: Record<string, string> = {
 
 function MenuItem({ item, openMenus, setOpenMenus, currentPath }: { item: MenuItem; openMenus: Set<string>; setOpenMenus: React.Dispatch<React.SetStateAction<Set<string>>>; currentPath: string }) {
   const isOpen = openMenus.has(item.name);
-  const isActive = item.href ? currentPath === item.href : item.children?.some(child => child.href && currentPath === child.href);
+  const isActive = item.href 
+    ? currentPath === item.href || (currentPath === '/' && item.href === '/developers')
+    : item.children?.some(child => child.href && (currentPath === child.href || (currentPath === '/' && child.href === '/developers')));
 
   const toggleMenu = () => {
     setOpenMenus(prev => {
@@ -68,7 +70,7 @@ function MenuItem({ item, openMenus, setOpenMenus, currentPath }: { item: MenuIt
         {isOpen && (
           <ul className="mt-1 space-y-1">
             {item.children.map((child) => {
-              const isChildActive = child.href && currentPath === child.href;
+              const isChildActive = child.href && (currentPath === child.href || (currentPath === '/' && child.href === '/developers'));
               return (
                 <li key={child.name}>
                   <Link
