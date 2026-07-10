@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, ExternalLink, Star, Plus, Trash2 } from 'lucide-react';
-import { useNewhouseStore } from '../../store';
+import { useNewhouseStore } from '@/src/modules/newhouse/store';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
 import { Checkbox } from '@/src/ui/checkbox';
@@ -15,7 +15,7 @@ import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
 import CreateModal from '../components/CreateModal';
 
-// 列配置
+// Column configuration
 const columns = [
   { key: 'code', label: 'Code', width: 'w-28' },
   { key: 'name', label: 'Name', width: 'w-[300px]' },
@@ -30,14 +30,14 @@ const columns = [
   { key: 'actions', label: 'Actions', width: 'w-32' },
 ];
 
-// 生成8位随机编码
+// Generate 8-digit random code
 const generateCode = (id: string) => {
   const seed = parseInt(id, 10) || 1;
   const random = Math.floor(Math.random() * 90000000) + 10000000;
   return String(random).slice(0, 8);
 };
 
-// 生成联系电话
+// Generate contact phone number
 const generateContactPhone = (id: string) => {
   const areaCode = ['138', '139', '158', '159', '188', '189'][Math.floor(Math.random() * 6)];
   const middle = String(Math.floor(Math.random() * 9000) + 1000);
@@ -45,7 +45,7 @@ const generateContactPhone = (id: string) => {
   return `${areaCode}${middle}${last}`;
 };
 
-// 生成历史缴费金额（带逗号分隔和两位小数）
+// Generate total payment amount (with comma separator and two decimal places)
 const generateTotalPayment = (id: string) => {
   const seed = parseInt(id, 10) || 1;
   const amount = (Math.random() * 99999999 + 100000).toFixed(2);
@@ -54,7 +54,7 @@ const generateTotalPayment = (id: string) => {
   return `${formattedInteger}.${decimalPart}`;
 };
 
-// 生成更新时间（年月日时分秒）
+// Generate update timestamp (YYYY-MM-DD HH:MM:SS)
 const generateUpdatedBy = (id: string) => {
   const now = new Date();
   const randomDays = Math.floor(Math.random() * 30);
@@ -158,7 +158,7 @@ export default function DeveloperList() {
     setBatchDeleteConfirm(false);
   };
 
-  // 渲染单元格内容
+  // Render cell content
   const renderCell = (developer: typeof developers[0], columnKey: string) => {
     switch (columnKey) {
       case 'code':

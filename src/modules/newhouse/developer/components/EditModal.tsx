@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
-import { useNewhouseStore } from '../../store';
-import type { Developer } from '../../models';
+import { useNewhouseStore } from '@/src/modules/newhouse/store';
+import type { Developer } from '@/src/modules/newhouse/models';
 
 interface EditModalProps {
   isOpen: boolean;

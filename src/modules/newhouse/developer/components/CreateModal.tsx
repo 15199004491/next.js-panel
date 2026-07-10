@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
-import { useNewhouseStore } from '../../store';
+import { useNewhouseStore } from '@/src/modules/newhouse/store';
 
 interface CreateModalProps {
   isOpen: boolean;
@@ -57,15 +57,15 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* 背景遮罩 */}
+      {/* Background overlay */}
       <div 
         className="absolute inset-0 bg-black/50"
         onClick={onClose}
       />
       
-      {/* 弹窗内容 */}
+      {/* Modal content */}
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
-        {/* 头部 */}
+        {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold">Create Developer</h3>
           <button
@@ -76,7 +76,7 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
           </button>
         </div>
 
-        {/* 表单 */}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -170,7 +170,7 @@ export default function CreateModal({ isOpen, onClose }: CreateModalProps) {
             />
           </div>
 
-          {/* 按钮 */}
+          {/* Buttons */}
           <div className="flex justify-end gap-2 pt-4">
             <Button
               type="button"

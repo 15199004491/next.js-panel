@@ -84,7 +84,7 @@ export const useNewhouseStore = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 300));
       const success = mockDeleteNewhouse(id);
-      if (!success) throw new Error('删除失败');
+      if (!success) throw new Error('Delete failed');
       setNewhouses(prev => prev.filter(item => item.id !== id));
       setPagination(prev => ({ ...prev, total: prev.total - 1 }));
     } catch (err) {
@@ -139,7 +139,7 @@ export const useNewhouseStore = () => {
       setPagination(prev => ({ ...prev, total: prev.total + 1 }));
       return newItem;
     } catch (err) {
-      setError(err instanceof Error ? err.message : '创建开发商失败');
+      setError(err instanceof Error ? err.message : 'Failed to create developer');
       throw err;
     } finally {
       setLoading(false);
@@ -152,12 +152,12 @@ export const useNewhouseStore = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 300));
       const updated = mockUpdateDeveloper(id, data);
-      if (!updated) throw new Error('开发商不存在');
+      if (!updated) throw new Error('Developer not found');
       setDevelopers(prev => prev.map(item => item.id === id ? updated : item));
       if (developer?.id === id) setDeveloper(updated);
       return updated;
     } catch (err) {
-      setError(err instanceof Error ? err.message : '更新开发商失败');
+      setError(err instanceof Error ? err.message : 'Failed to update developer');
       throw err;
     } finally {
       setLoading(false);
@@ -170,11 +170,11 @@ export const useNewhouseStore = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 300));
       const success = mockDeleteDeveloper(id);
-      if (!success) throw new Error('删除失败');
+      if (!success) throw new Error('Delete failed');
       setDevelopers(prev => prev.filter(item => item.id !== id));
       setPagination(prev => ({ ...prev, total: prev.total - 1 }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch developer');
+      setError(err instanceof Error ? err.message : 'Failed to delete developer');
       throw err;
     } finally {
       setLoading(false);

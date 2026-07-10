@@ -6,8 +6,8 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
 import { Card, CardContent } from '@/src/ui/card';
-import { useNewhouseStore } from '../../store';
-import type { Developer } from '../../models';
+import { useNewhouseStore } from '@/src/modules/newhouse/store';
+import type { Developer } from '@/src/modules/newhouse/models';
 
 export default function DeveloperEdit() {
   const router = useRouter();

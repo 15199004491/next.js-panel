@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppStore } from '../../core/store';
+import { useAppStore } from '@/src/core/store';
 import { Card } from '@/src/ui/card';
 
 interface MainContentProps {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useAppStore } from '../../core/store';
+import { useAppStore } from '@/src/core/store';
 
 interface MenuItem {
   name: string;

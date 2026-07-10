@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useAppStore } from '../../core/store';
-import { regionTree, type Region } from '../../data/regions';
+import { useAppStore } from '@/src/core/store';
+import { regionTree, type Region } from '@/src/data/regions';
 
 interface TreeNodeProps {
   region: Region;
