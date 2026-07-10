@@ -17,8 +17,8 @@ const menuItems: MenuItem[] = [
     name: 'New Properties',
     icon: 'home',
     children: [
-      { name: 'Newhouse', icon: 'home', href: '/newhouses' },
       { name: 'Developers', icon: 'users', href: '/developers' },
+      { name: 'Newhouse', icon: 'home', href: '/newhouses' },
     ],
   },
   { name: 'Resale Properties', icon: 'building', href: '/resale' },

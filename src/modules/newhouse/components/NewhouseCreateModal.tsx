@@ -12,7 +12,7 @@ interface CreateModalProps {
   onSuccess?: () => void;
 }
 
-export default function CreateModal({ isOpen, onClose, onSuccess }: CreateModalProps) {
+export default function NewhouseCreateModal({ isOpen, onClose, onSuccess }: CreateModalProps) {
   const { createNewhouse } = useNewhouse();
 
   const handleSubmit = async (formData: {

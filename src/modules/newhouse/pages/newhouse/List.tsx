@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ExternalLink, Star, Plus, Trash2 } from 'lucide-react';
-import { useDeveloper } from '@/src/modules/newhouse/hooks/useDeveloper';
+import { useSearchParams } from 'next/navigation';
+import { Search, DollarSign, Plus, Trash2 } from 'lucide-react';
+import { useNewhouse } from '@/src/modules/newhouse/hooks/useNewhouse';
 import { useAppStore } from '@/src/core/store';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
@@ -13,110 +14,101 @@ import { Badge } from '@/src/ui/badge';
 import { Card, CardContent } from '@/src/ui/card';
 import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
-import CreateModal from '../components/CreateModal';
+import NewhouseCreateModal from '@/src/modules/newhouse/components/NewhouseCreateModal';
 import { ConfirmDialog } from '@/src/components/confirm-dialog';
-import { generateCode, generateContactPhone, generateTotalPayment, generateUpdatedBy } from '@/src/modules/newhouse/mock';
-import type { Developer } from '@/src/modules/newhouse/models';
+import type { Newhouse } from '@/src/modules/newhouse/models';
 
-// Column configuration with cell renderers
+const getDeveloperId = (developerName: string): string => {
+  const developerMap: Record<string, string> = {
+    'China Vanke': '1',
+    'Evergrande Group': '2',
+    'Country Garden': '3',
+    'Poly Developments': '4',
+    'Longfor Properties': '5',
+    'Sunac China': '6',
+  };
+  return developerMap[developerName] || '1';
+};
+
 const columns = [
-  { 
-    key: 'code', 
-    label: 'Code', 
-    width: 'w-28',
-    render: (dev: Developer) => (
-      <span className="text-sm text-muted-foreground">{generateCode(dev.id)}</span>
-    ),
-  },
   { 
     key: 'name', 
     label: 'Name', 
-    width: 'w-[300px]',
-    render: (dev: Developer) => (
-      <>
-        <div className="font-medium">{dev.name}</div>
-        <div className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
-          {dev.description}
-        </div>
-      </>
+    width: 'w-[200px]',
+    render: (house: Newhouse) => (
+      <div className="font-medium">{house.name}</div>
     ),
   },
   { 
-    key: 'entryYears', 
-    label: 'Years', 
-    width: 'w-52',
-    render: (dev: Developer) => <span className="text-sm">{dev.entryYears}</span>,
-  },
-  { 
-    key: 'projectsCount', 
-    label: 'Projects', 
-    width: 'w-24',
-    render: (dev: Developer) => (
-      <Link href={`/newhouses?developer=${encodeURIComponent(dev.name)}`} className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
-        {dev.projectsCount}
-        <ExternalLink className="w-3 h-3" />
-      </Link>
-    ),
-  },
-  { 
-    key: 'rating', 
-    label: 'Rating', 
-    width: 'w-20',
-    render: (dev: Developer) => (
+    key: 'price', 
+    label: 'Paid', 
+    width: 'w-36',
+    render: (house: Newhouse) => (
       <div className="flex items-center gap-1">
-        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-        <span className="text-sm">{dev.rating}</span>
+        <DollarSign className="w-3 h-3 text-muted-foreground" />
+        <span className="text-sm font-medium">{house.price.toLocaleString()}</span>
       </div>
     ),
   },
   { 
-    key: 'status', 
-    label: 'Status', 
-    width: 'w-20',
-    render: (dev: Developer) => (
-      <Badge variant={dev.status === 'active' ? 'success' : 'secondary'}>
-        {dev.status === 'active' ? 'Active' : 'Inactive'}
-      </Badge>
+    key: 'address', 
+    label: 'Address', 
+    width: 'w-[350px]',
+    render: (house: Newhouse) => (
+      <div className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
+        {house.address}
+      </div>
+    ),
+  },
+  { 
+    key: 'developer', 
+    label: 'Developer', 
+    width: 'w-[250px]',
+    render: (house: Newhouse) => (
+      <Link 
+        href={`/developers/${getDeveloperId(house.developer)}/edit?readonly=true`}
+        className="text-sm text-blue-600 hover:text-blue-800 underline hover:no-underline transition-colors cursor-pointer"
+      >
+        {house.developer}
+      </Link>
     ),
   },
   { 
     key: 'contactPhone', 
     label: 'Contact Phone', 
-    width: 'w-44',
-    render: (dev: Developer) => (
-      <span className="text-sm text-muted-foreground">{generateContactPhone(dev.id)}</span>
+    width: 'w-40',
+    render: (house: Newhouse) => (
+      <span className="text-sm">{house.contactPhone}</span>
     ),
   },
   { 
-    key: 'totalPayment', 
-    label: 'Total Payment', 
-    width: 'w-36',
-    render: (dev: Developer) => (
-      <span className="text-sm text-muted-foreground">${generateTotalPayment(dev.id)}</span>
+    key: 'status', 
+    label: 'Status', 
+    width: 'w-24',
+    render: (house: Newhouse) => (
+      <Badge 
+        variant={house.status === 'available' ? 'success' : house.status === 'sold' ? 'destructive' : 'secondary'}
+      >
+        {house.status === 'available' ? 'Available' : house.status === 'sold' ? 'Sold' : 'Reserved'}
+      </Badge>
     ),
   },
   { 
-    key: 'updatedBy', 
-    label: 'Updated', 
-    width: 'w-[450px]',
-    render: (dev: Developer) => (
-      <span className="text-sm text-muted-foreground">{generateUpdatedBy(dev.id)}</span>
-    ),
-  },
-  { 
-    key: 'remark', 
-    label: 'Remark', 
-    width: 'w-[400px]',
-    render: (dev: Developer) => (
+    key: 'description', 
+    label: 'Description', 
+    width: 'w-[250px]',
+    render: (house: Newhouse) => (
       <div className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
-        {dev.remark}
+        {house.description}
       </div>
     ),
   },
 ];
 
-export default function DeveloperList() {
-  const [keyword, setKeyword] = useState('');
+export default function NewhouseList() {
+  const searchParams = useSearchParams();
+  const initialKeyword = searchParams?.get('developer') || '';
+  const [keyword, setKeyword] = useState(initialKeyword);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
   const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
@@ -125,34 +117,34 @@ export default function DeveloperList() {
   const { selectedRegion } = state;
   
   const {
-    developers,
+    newhouses,
     pagination,
     loading,
     error,
     selectedIds,
     isAllSelected,
-    fetchDevelopers,
-    deleteDeveloper,
-    batchDeleteDevelopers,
+    fetchNewhouses,
+    deleteNewhouse,
+    batchDeleteNewhouses,
     selectAll,
     toggleSelect,
     clearSelection,
-  } = useDeveloper();
+  } = useNewhouse();
 
   useEffect(() => {
-    fetchDevelopers(pagination.page, pagination.pageSize, keyword, selectedRegion);
+    fetchNewhouses(1, pagination.pageSize, initialKeyword || keyword, selectedRegion);
   }, []);
 
   useEffect(() => {
-    fetchDevelopers(1, pagination.pageSize, keyword, selectedRegion);
+    fetchNewhouses(1, pagination.pageSize, keyword, selectedRegion);
   }, [selectedRegion]);
 
   const handleSearch = () => {
-    fetchDevelopers(1, pagination.pageSize, keyword, selectedRegion);
+    fetchNewhouses(1, pagination.pageSize, keyword, selectedRegion);
   };
 
   const handlePageChange = (page: number) => {
-    fetchDevelopers(page, pagination.pageSize, keyword, selectedRegion);
+    fetchNewhouses(page, pagination.pageSize, keyword, selectedRegion);
   };
 
   const handleDeleteClick = (id: string, name: string) => {
@@ -162,7 +154,7 @@ export default function DeveloperList() {
   const handleConfirmDelete = async () => {
     if (!deleteConfirm) return;
     try {
-      await deleteDeveloper(deleteConfirm.id);
+      await deleteNewhouse(deleteConfirm.id);
       setDeleteConfirm(null);
     } catch (err) {
       console.error('Delete failed:', err);
@@ -181,7 +173,7 @@ export default function DeveloperList() {
 
   const handleConfirmBatchDelete = async () => {
     try {
-      await batchDeleteDevelopers(selectedIds);
+      await batchDeleteNewhouses(selectedIds);
       setBatchDeleteConfirm(false);
     } catch (err) {
       console.error('Batch delete failed:', err);
@@ -193,7 +185,7 @@ export default function DeveloperList() {
   };
 
   const handleCreateSuccess = () => {
-    fetchDevelopers(pagination.page, pagination.pageSize, keyword, selectedRegion);
+    fetchNewhouses(pagination.page, pagination.pageSize, keyword, selectedRegion);
     setIsCreateModalOpen(false);
   };
 
@@ -213,16 +205,16 @@ export default function DeveloperList() {
       key: 'actions',
       label: 'Actions',
       width: 'w-32',
-      render: (dev: Developer) => (
+      render: (house: Newhouse) => (
         <div className="flex items-center gap-2">
           <Link 
-            href={`/developers/${dev.id}/edit?readonly=true`}
+            href={`/newhouses/${house.id}/edit?readonly=true`}
             className="inline-flex items-center gap-1 text-sm text-green-600 hover:text-green-700"
           >
             Detail
           </Link>
           <Link 
-            href={`/developers/${dev.id}/edit`}
+            href={`/newhouses/${house.id}/edit`}
             className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
           >
             Edit
@@ -233,7 +225,7 @@ export default function DeveloperList() {
             className="text-destructive hover:text-destructive/80 p-0 h-auto"
             onClick={(e) => {
               e.stopPropagation();
-              handleDeleteClick(dev.id, dev.name);
+              handleDeleteClick(house.id, house.name);
             }}
           >
             Delete
@@ -245,15 +237,14 @@ export default function DeveloperList() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">Developers</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Newhouses</h2>
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Search developers..."
+              placeholder="Search newhouses..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -279,7 +270,6 @@ export default function DeveloperList() {
         </div>
       </div>
 
-      {/* Card with Table */}
       <Card>
         <CardContent className="p-0 overflow-x-auto">
           {loading ? (
@@ -305,14 +295,14 @@ export default function DeveloperList() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {developers.map((developer) => (
-                  <TableRow key={developer.id}>
+                {newhouses.map((house) => (
+                  <TableRow key={house.id}>
                     <TableCell className="w-12">
-                      <Checkbox checked={selectedIds.has(developer.id)} onCheckedChange={() => toggleSelect(developer.id)} />
+                      <Checkbox checked={selectedIds.has(house.id)} onCheckedChange={() => toggleSelect(house.id)} />
                     </TableCell>
                     {columnsWithActions.map((column) => (
                       <TableCell key={column.key} className={column.key === 'actions' ? 'whitespace-nowrap' : ''}>
-                        {column.render?.(developer)}
+                        {column.render?.(house)}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -321,14 +311,13 @@ export default function DeveloperList() {
               <TableCaption>
                 Showing {((pagination.page - 1) * pagination.pageSize) + 1} to{' '}
                 {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
-                {pagination.total} developers
+                {pagination.total} newhouses
               </TableCaption>
             </Table>
           )}
         </CardContent>
       </Card>
 
-      {/* Pagination */}
       <div className="flex justify-end">
         <Pagination
           page={pagination.page}
@@ -338,7 +327,6 @@ export default function DeveloperList() {
         />
       </div>
 
-      {/* Confirm Dialog */}
       <ConfirmDialog
         open={!!deleteConfirm || batchDeleteConfirm}
         onClose={() => {
@@ -351,8 +339,7 @@ export default function DeveloperList() {
         onConfirm={deleteConfirm ? handleConfirmDelete : handleConfirmBatchDelete}
       />
 
-      {/* Create Modal */}
-      <CreateModal 
+      <NewhouseCreateModal 
         isOpen={isCreateModalOpen} 
         onClose={() => setIsCreateModalOpen(false)} 
         onSuccess={handleCreateSuccess}

@@ -12,7 +12,7 @@ interface CreateModalProps {
   onSuccess?: () => void;
 }
 
-export default function CreateModal({ isOpen, onClose, onSuccess }: CreateModalProps) {
+export default function DeveloperCreateModal({ isOpen, onClose, onSuccess }: CreateModalProps) {
   const { createDeveloper } = useDeveloper();
 
   const handleSubmit = async (formData: {
@@ -47,9 +47,6 @@ export default function CreateModal({ isOpen, onClose, onSuccess }: CreateModalP
         <DialogHeader>
           <div className="flex items-center justify-between w-full">
             <DialogTitle>Create Developer</DialogTitle>
-            {/* <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="w-4 h-4" />
-            </Button> */}
           </div>
         </DialogHeader>
         

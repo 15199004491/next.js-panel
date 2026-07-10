@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { regionTree, type Region } from '../../data/regions';
-import { isRegionSwitchAllowed } from '../../config/routeConfig';
+import { regionTree, type Region } from '@/src/data/regions';
+import { isRegionSwitchAllowed } from '@/src/config/routeConfig';
 
 interface TreeNodeProps {
   region: Region;

@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
-import type { Developer, PaginationResponse } from '../models';
-import { developerApi } from '../api/developerApi';
+import type { Developer, PaginationResponse } from '@/src/modules/newhouse/models';
+import { developerApi } from '@/src/modules/newhouse/api/developerApi';
 
 export function useDeveloper() {
   const [loading, setLoading] = useState(false);

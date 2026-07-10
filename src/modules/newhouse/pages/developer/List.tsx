@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { Search, DollarSign, Plus, Trash2 } from 'lucide-react';
-import { useNewhouse } from '@/src/modules/newhouse/hooks/useNewhouse';
+import { Search, ExternalLink, Star, Plus, Trash2 } from 'lucide-react';
+import { useDeveloper } from '@/src/modules/newhouse/hooks/useDeveloper';
 import { useAppStore } from '@/src/core/store';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
@@ -14,101 +13,109 @@ import { Badge } from '@/src/ui/badge';
 import { Card, CardContent } from '@/src/ui/card';
 import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
-import CreateModal from '../components/CreateModal';
+import DeveloperCreateModal from '@/src/modules/newhouse/components/DeveloperCreateModal';
 import { ConfirmDialog } from '@/src/components/confirm-dialog';
-import type { Newhouse } from '@/src/modules/newhouse/models';
-
-const getDeveloperId = (developerName: string): string => {
-  const developerMap: Record<string, string> = {
-    'China Vanke': '1',
-    'Evergrande Group': '2',
-    'Country Garden': '3',
-    'Poly Developments': '4',
-    'Longfor Properties': '5',
-    'Sunac China': '6',
-  };
-  return developerMap[developerName] || '1';
-};
+import { generateCode, generateContactPhone, generateTotalPayment, generateUpdatedBy } from '@/src/modules/newhouse/mock';
+import type { Developer } from '@/src/modules/newhouse/models';
 
 const columns = [
   { 
+    key: 'code', 
+    label: 'Code', 
+    width: 'w-28',
+    render: (dev: Developer) => (
+      <span className="text-sm text-muted-foreground">{generateCode(dev.id)}</span>
+    ),
+  },
+  { 
     key: 'name', 
     label: 'Name', 
-    width: 'w-[200px]',
-    render: (house: Newhouse) => (
-      <div className="font-medium">{house.name}</div>
+    width: 'w-[300px]',
+    render: (dev: Developer) => (
+      <>
+        <div className="font-medium">{dev.name}</div>
+        <div className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
+          {dev.description}
+        </div>
+      </>
     ),
   },
   { 
-    key: 'price', 
-    label: 'Paid', 
-    width: 'w-36',
-    render: (house: Newhouse) => (
-      <div className="flex items-center gap-1">
-        <DollarSign className="w-3 h-3 text-muted-foreground" />
-        <span className="text-sm font-medium">{house.price.toLocaleString()}</span>
-      </div>
-    ),
+    key: 'entryYears', 
+    label: 'Years', 
+    width: 'w-52',
+    render: (dev: Developer) => <span className="text-sm">{dev.entryYears}</span>,
   },
   { 
-    key: 'address', 
-    label: 'Address', 
-    width: 'w-[350px]',
-    render: (house: Newhouse) => (
-      <div className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
-        {house.address}
-      </div>
-    ),
-  },
-  { 
-    key: 'developer', 
-    label: 'Developer', 
-    width: 'w-[250px]',
-    render: (house: Newhouse) => (
-      <Link 
-        href={`/developers/${getDeveloperId(house.developer)}/edit?readonly=true`}
-        className="text-sm text-blue-600 hover:text-blue-800 underline hover:no-underline transition-colors cursor-pointer"
-      >
-        {house.developer}
+    key: 'projectsCount', 
+    label: 'Projects', 
+    width: 'w-24',
+    render: (dev: Developer) => (
+      <Link href={`/newhouses?developer=${encodeURIComponent(dev.name)}`} className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
+        {dev.projectsCount}
+        <ExternalLink className="w-3 h-3" />
       </Link>
     ),
   },
   { 
-    key: 'contactPhone', 
-    label: 'Contact Phone', 
-    width: 'w-40',
-    render: (house: Newhouse) => (
-      <span className="text-sm">{house.contactPhone}</span>
+    key: 'rating', 
+    label: 'Rating', 
+    width: 'w-20',
+    render: (dev: Developer) => (
+      <div className="flex items-center gap-1">
+        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+        <span className="text-sm">{dev.rating}</span>
+      </div>
     ),
   },
   { 
     key: 'status', 
     label: 'Status', 
-    width: 'w-24',
-    render: (house: Newhouse) => (
-      <Badge 
-        variant={house.status === 'available' ? 'success' : house.status === 'sold' ? 'destructive' : 'secondary'}
-      >
-        {house.status === 'available' ? 'Available' : house.status === 'sold' ? 'Sold' : 'Reserved'}
+    width: 'w-20',
+    render: (dev: Developer) => (
+      <Badge variant={dev.status === 'active' ? 'success' : 'secondary'}>
+        {dev.status === 'active' ? 'Active' : 'Inactive'}
       </Badge>
     ),
   },
   { 
-    key: 'description', 
-    label: 'Description', 
-    width: 'w-[250px]',
-    render: (house: Newhouse) => (
+    key: 'contactPhone', 
+    label: 'Contact Phone', 
+    width: 'w-44',
+    render: (dev: Developer) => (
+      <span className="text-sm text-muted-foreground">{generateContactPhone(dev.id)}</span>
+    ),
+  },
+  { 
+    key: 'totalPayment', 
+    label: 'Total Payment', 
+    width: 'w-36',
+    render: (dev: Developer) => (
+      <span className="text-sm text-muted-foreground">${generateTotalPayment(dev.id)}</span>
+    ),
+  },
+  { 
+    key: 'updatedBy', 
+    label: 'Updated', 
+    width: 'w-[450px]',
+    render: (dev: Developer) => (
+      <span className="text-sm text-muted-foreground">{generateUpdatedBy(dev.id)}</span>
+    ),
+  },
+  { 
+    key: 'remark', 
+    label: 'Remark', 
+    width: 'w-[400px]',
+    render: (dev: Developer) => (
       <div className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
-        {house.description}
+        {dev.remark}
       </div>
     ),
   },
 ];
 
-export default function NewhouseList() {
-  const searchParams = useSearchParams();
-  const initialKeyword = searchParams?.get('developer') || '';
-  const [keyword, setKeyword] = useState(initialKeyword);
+export default function DeveloperList() {
+  const [keyword, setKeyword] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
   const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
@@ -117,34 +124,34 @@ export default function NewhouseList() {
   const { selectedRegion } = state;
   
   const {
-    newhouses,
+    developers,
     pagination,
     loading,
     error,
     selectedIds,
     isAllSelected,
-    fetchNewhouses,
-    deleteNewhouse,
-    batchDeleteNewhouses,
+    fetchDevelopers,
+    deleteDeveloper,
+    batchDeleteDevelopers,
     selectAll,
     toggleSelect,
     clearSelection,
-  } = useNewhouse();
+  } = useDeveloper();
 
   useEffect(() => {
-    fetchNewhouses(1, pagination.pageSize, initialKeyword || keyword, selectedRegion);
+    fetchDevelopers(pagination.page, pagination.pageSize, keyword, selectedRegion);
   }, []);
 
   useEffect(() => {
-    fetchNewhouses(1, pagination.pageSize, keyword, selectedRegion);
+    fetchDevelopers(1, pagination.pageSize, keyword, selectedRegion);
   }, [selectedRegion]);
 
   const handleSearch = () => {
-    fetchNewhouses(1, pagination.pageSize, keyword, selectedRegion);
+    fetchDevelopers(1, pagination.pageSize, keyword, selectedRegion);
   };
 
   const handlePageChange = (page: number) => {
-    fetchNewhouses(page, pagination.pageSize, keyword, selectedRegion);
+    fetchDevelopers(page, pagination.pageSize, keyword, selectedRegion);
   };
 
   const handleDeleteClick = (id: string, name: string) => {
@@ -154,7 +161,7 @@ export default function NewhouseList() {
   const handleConfirmDelete = async () => {
     if (!deleteConfirm) return;
     try {
-      await deleteNewhouse(deleteConfirm.id);
+      await deleteDeveloper(deleteConfirm.id);
       setDeleteConfirm(null);
     } catch (err) {
       console.error('Delete failed:', err);
@@ -173,7 +180,7 @@ export default function NewhouseList() {
 
   const handleConfirmBatchDelete = async () => {
     try {
-      await batchDeleteNewhouses(selectedIds);
+      await batchDeleteDevelopers(selectedIds);
       setBatchDeleteConfirm(false);
     } catch (err) {
       console.error('Batch delete failed:', err);
@@ -185,7 +192,7 @@ export default function NewhouseList() {
   };
 
   const handleCreateSuccess = () => {
-    fetchNewhouses(pagination.page, pagination.pageSize, keyword, selectedRegion);
+    fetchDevelopers(pagination.page, pagination.pageSize, keyword, selectedRegion);
     setIsCreateModalOpen(false);
   };
 
@@ -205,16 +212,16 @@ export default function NewhouseList() {
       key: 'actions',
       label: 'Actions',
       width: 'w-32',
-      render: (house: Newhouse) => (
+      render: (dev: Developer) => (
         <div className="flex items-center gap-2">
           <Link 
-            href={`/newhouses/${house.id}/edit?readonly=true`}
+            href={`/developers/${dev.id}/edit?readonly=true`}
             className="inline-flex items-center gap-1 text-sm text-green-600 hover:text-green-700"
           >
             Detail
           </Link>
           <Link 
-            href={`/newhouses/${house.id}/edit`}
+            href={`/developers/${dev.id}/edit`}
             className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
           >
             Edit
@@ -225,7 +232,7 @@ export default function NewhouseList() {
             className="text-destructive hover:text-destructive/80 p-0 h-auto"
             onClick={(e) => {
               e.stopPropagation();
-              handleDeleteClick(house.id, house.name);
+              handleDeleteClick(dev.id, dev.name);
             }}
           >
             Delete
@@ -238,13 +245,13 @@ export default function NewhouseList() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">Newhouses</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Developers</h2>
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Search newhouses..."
+              placeholder="Search developers..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -295,14 +302,14 @@ export default function NewhouseList() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {newhouses.map((house) => (
-                  <TableRow key={house.id}>
+                {developers.map((developer) => (
+                  <TableRow key={developer.id}>
                     <TableCell className="w-12">
-                      <Checkbox checked={selectedIds.has(house.id)} onCheckedChange={() => toggleSelect(house.id)} />
+                      <Checkbox checked={selectedIds.has(developer.id)} onCheckedChange={() => toggleSelect(developer.id)} />
                     </TableCell>
                     {columnsWithActions.map((column) => (
                       <TableCell key={column.key} className={column.key === 'actions' ? 'whitespace-nowrap' : ''}>
-                        {column.render?.(house)}
+                        {column.render?.(developer)}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -311,7 +318,7 @@ export default function NewhouseList() {
               <TableCaption>
                 Showing {((pagination.page - 1) * pagination.pageSize) + 1} to{' '}
                 {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
-                {pagination.total} newhouses
+                {pagination.total} developers
               </TableCaption>
             </Table>
           )}
@@ -339,7 +346,7 @@ export default function NewhouseList() {
         onConfirm={deleteConfirm ? handleConfirmDelete : handleConfirmBatchDelete}
       />
 
-      <CreateModal 
+      <DeveloperCreateModal 
         isOpen={isCreateModalOpen} 
         onClose={() => setIsCreateModalOpen(false)} 
         onSuccess={handleCreateSuccess}

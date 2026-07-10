@@ -1,4 +1,4 @@
-import type { Newhouse, Developer, PaginationResponse } from '../models';
+import type { Newhouse, Developer, PaginationResponse } from '@/src/modules/newhouse/models';
 
 const mockNewhouses: Newhouse[] = [
   { id: '1', name: 'Sunshine Garden', address: '88 Jianguo Road, Chaoyang District, Beijing, China', price: 8500000, developer: 'China Vanke', contactPhone: '0991-5831310', status: 'available', images: ['https://via.placeholder.com/300x200'], description: 'South-facing, good lighting', createdAt: '2024-01-01 10:00:00', updatedAt: '2024-01-15 14:30:00' },

@@ -1,4 +1,4 @@
-import type { Newhouse } from '../models';
+import type { Newhouse } from '@/src/modules/newhouse/models';
 
 export const formatPrice = (price: number): string => {
   if (price >= 100000000) return `${(price / 100000000).toFixed(2)}B`;

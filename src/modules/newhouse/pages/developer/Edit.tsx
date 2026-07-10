@@ -5,55 +5,55 @@ import { Save } from 'lucide-react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { Button } from '@/src/ui/button';
 import { Card, CardContent } from '@/src/ui/card';
-import { useNewhouse } from '@/src/modules/newhouse/hooks/useNewhouse';
-import NewhouseForm from '../components/NewhouseForm';
-import type { Newhouse } from '@/src/modules/newhouse/models';
+import { useDeveloper } from '@/src/modules/newhouse/hooks/useDeveloper';
+import DeveloperForm from '@/src/modules/newhouse/components/DeveloperForm';
+import type { Developer } from '@/src/modules/newhouse/models';
 import { FormSkeleton } from '@/src/components/form-skeleton';
 import { BackButton } from '@/src/components/back-button';
 
-export default function NewhouseEdit() {
+export default function DeveloperEdit() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
   const id = params.id as string;
   const readonly = searchParams.get('readonly') === 'true';
   
-  const { newhouse, loading, error, fetchNewhouseById, updateNewhouse } = useNewhouse();
+  const { developer, loading, error, fetchDeveloperById, updateDeveloper } = useDeveloper();
 
   useEffect(() => {
     if (!id) return;
-    fetchNewhouseById(id);
-  }, [id, fetchNewhouseById]);
+    fetchDeveloperById(id);
+  }, [id, fetchDeveloperById]);
 
   const handleSubmit = async (formData: {
     name: string;
-    address: string;
-    price: string;
-    developer: string;
-    contactPhone: string;
-    status: 'available' | 'sold' | 'reserved';
-    images: string;
+    logo: string;
     description: string;
+    entryYears: string;
+    projectsCount: string;
+    rating: string;
+    status: 'active' | 'inactive';
+    remark: string;
   }) => {
-    if (!newhouse) return;
+    if (!developer) return;
     
     const updatedData = {
       name: formData.name,
-      address: formData.address,
-      price: parseInt(formData.price) || 0,
-      developer: formData.developer,
-      contactPhone: formData.contactPhone,
-      status: formData.status,
-      images: formData.images ? [formData.images] : [],
+      logo: formData.logo || 'https://via.placeholder.com/100x100',
       description: formData.description,
+      entryYears: parseInt(formData.entryYears) || 0,
+      projectsCount: parseInt(formData.projectsCount) || 0,
+      rating: parseFloat(formData.rating) || 0,
+      status: formData.status,
+      remark: formData.remark,
     };
 
-    await updateNewhouse(newhouse.id, updatedData);
-    router.push('/newhouses');
+    await updateDeveloper(developer.id, updatedData);
+    router.push('/developers');
   };
 
   const handleCancel = () => {
-    router.push('/newhouses');
+    router.back();
   };
 
   if (loading) {
@@ -69,13 +69,13 @@ export default function NewhouseEdit() {
     );
   }
 
-  if (error || !newhouse) {
+  if (error || !developer) {
     return (
       <div className="space-y-6">
         <BackButton onClick={handleCancel} />
         <Card>
           <CardContent className="p-6">
-            <p className="text-destructive text-center">{error || 'Newhouse not found'}</p>
+            <p className="text-destructive text-center">{error || 'Developer not found'}</p>
           </CardContent>
         </Card>
       </div>
@@ -90,8 +90,8 @@ export default function NewhouseEdit() {
 
       <Card className="w-full">
         <CardContent className="p-6">
-          <NewhouseForm
-            initialData={newhouse as Newhouse}
+          <DeveloperForm
+            initialData={developer as Developer}
             disabled={readonly}
             onSubmit={handleSubmit}
           />

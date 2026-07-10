@@ -1,5 +1,5 @@
-import type { Developer, PaginationResponse } from '../models';
-import { mockGetDevelopers, mockGetDeveloperById, mockCreateDeveloper, mockUpdateDeveloper, mockDeleteDeveloper } from '../mock';
+import type { Developer, PaginationResponse } from '@/src/modules/newhouse/models';
+import { mockGetDevelopers, mockGetDeveloperById, mockCreateDeveloper, mockUpdateDeveloper, mockDeleteDeveloper } from '@/src/modules/newhouse/mock';
 
 const isMock = process.env.NEXT_PUBLIC_USE_MOCK !== 'false';
 

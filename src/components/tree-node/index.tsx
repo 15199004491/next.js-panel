@@ -1,4 +1,4 @@
-import type { TreeNodeData } from '../common-tree/types';
+import type { TreeNodeData } from '@/src/components/common-tree/types';
 
 interface TreeNodeProps {
   node: TreeNodeData;

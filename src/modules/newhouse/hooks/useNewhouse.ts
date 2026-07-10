@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { newhouseApi } from '../api/newhouseApi';
-import type { Newhouse, PaginationResponse } from '../models';
+import { newhouseApi } from '@/src/modules/newhouse/api/newhouseApi';
+import type { Newhouse, PaginationResponse } from '@/src/modules/newhouse/models';
 
 interface UseNewhouseReturn {
   newhouses: Newhouse[];

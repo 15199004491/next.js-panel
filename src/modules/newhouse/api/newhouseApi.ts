@@ -1,5 +1,5 @@
-import type { Newhouse, PaginationResponse } from '../models';
-import { mockGetNewhouses, mockGetNewhouseById, mockCreateNewhouse, mockUpdateNewhouse, mockDeleteNewhouse } from '../mock';
+import type { Newhouse, PaginationResponse } from '@/src/modules/newhouse/models';
+import { mockGetNewhouses, mockGetNewhouseById, mockCreateNewhouse, mockUpdateNewhouse, mockDeleteNewhouse } from '@/src/modules/newhouse/mock';
 
 const isMock = process.env.NEXT_PUBLIC_USE_MOCK !== 'false';
 

@@ -3,7 +3,7 @@
 import Header from '../../../../src/layouts/header';
 import Sidebar from '../../../../src/layouts/sidebar';
 import MainContent from '../../../../src/layouts/main-content';
-import DeveloperEdit from '../../../../src/modules/newhouse/developer/pages/Edit';
+import DeveloperEdit from '../../../../src/modules/newhouse/pages/developer/Edit';
 
 export default function EditPage() {
   return (

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import TreeNode from '../tree-node';
+import TreeNode from '@/src/components/tree-node';
 import type { TreeNodeData, TreeProps } from './types';
 
 export default function CommonTree({
