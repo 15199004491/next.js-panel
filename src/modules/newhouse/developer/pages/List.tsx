@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, ExternalLink, Star, Plus, Trash2 } from 'lucide-react';
 import { useDeveloper } from '@/src/modules/newhouse/hooks/useDeveloper';
+import { useAppStore } from '@/src/core/store';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
 import { Checkbox } from '@/src/ui/checkbox';
@@ -120,6 +121,9 @@ export default function DeveloperList() {
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
   const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
   
+  const { state } = useAppStore();
+  const { selectedRegion } = state;
+  
   const {
     developers,
     pagination,
@@ -136,15 +140,19 @@ export default function DeveloperList() {
   } = useDeveloper();
 
   useEffect(() => {
-    fetchDevelopers(pagination.page, pagination.pageSize, keyword);
+    fetchDevelopers(pagination.page, pagination.pageSize, keyword, selectedRegion);
   }, []);
 
+  useEffect(() => {
+    fetchDevelopers(1, pagination.pageSize, keyword, selectedRegion);
+  }, [selectedRegion]);
+
   const handleSearch = () => {
-    fetchDevelopers(1, pagination.pageSize, keyword);
+    fetchDevelopers(1, pagination.pageSize, keyword, selectedRegion);
   };
 
   const handlePageChange = (page: number) => {
-    fetchDevelopers(page, pagination.pageSize, keyword);
+    fetchDevelopers(page, pagination.pageSize, keyword, selectedRegion);
   };
 
   const handleDeleteClick = (id: string, name: string) => {
@@ -185,7 +193,7 @@ export default function DeveloperList() {
   };
 
   const handleCreateSuccess = () => {
-    fetchDevelopers(pagination.page, pagination.pageSize, keyword);
+    fetchDevelopers(pagination.page, pagination.pageSize, keyword, selectedRegion);
     setIsCreateModalOpen(false);
   };
 

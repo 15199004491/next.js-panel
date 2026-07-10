@@ -6,47 +6,44 @@ import { regionTree, type Region } from '../../data/regions';
 interface TreeNodeProps {
   region: Region;
   level: number;
-  selectedPath: string[];
+  parentPath: string[];
+  internalPath: string[];
   onSelect: (path: string[], region: Region) => void;
   onExpand: (id: string) => void;
   expandedIds: Set<string>;
 }
 
-function TreeNode({ region, level, selectedPath, onSelect, onExpand, expandedIds }: TreeNodeProps) {
+function TreeNode({ region, level, parentPath, internalPath, onSelect, onExpand, expandedIds }: TreeNodeProps) {
   const hasChildren = region.children && region.children.length > 0;
   const isExpanded = expandedIds.has(region.id);
-  const isSelected = selectedPath[level] === region.name;
+  const currentFullPath = [...parentPath, region.name];
+  const isSelected = internalPath.length >= currentFullPath.length && 
+                    currentFullPath.every((name, idx) => internalPath[idx] === name);
 
   const handleClick = () => {
-    const newPath = selectedPath.slice(0, level + 1);
-    newPath[level] = region.name;
-    onSelect(newPath, region);
+    if (hasChildren) {
+      onExpand(region.id);
+    } else {
+      onSelect(currentFullPath, region);
+    }
   };
 
   return (
     <div>
       <div
-        className={`flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer hover:bg-gray-100 transition-colors ${isSelected ? 'bg-blue-50 text-blue-600' : 'text-gray-700'}`}
+        className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${hasChildren ? 'cursor-pointer hover:bg-gray-100 text-gray-700' : isSelected ? 'bg-blue-50 text-blue-600 cursor-pointer hover:bg-blue-100' : 'text-gray-700 cursor-pointer hover:bg-gray-100'}`}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
         onClick={handleClick}
       >
         {hasChildren && (
-          <button
-            className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-600"
-            onClick={(e) => {
-              e.stopPropagation();
-              onExpand(region.id);
-            }}
+          <svg
+            className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         )}
         {!hasChildren && <span className="w-5" />}
         <span className="text-sm font-medium truncate">{region.name}</span>
@@ -58,7 +55,8 @@ function TreeNode({ region, level, selectedPath, onSelect, onExpand, expandedIds
               key={child.id}
               region={child}
               level={level + 1}
-              selectedPath={selectedPath}
+              parentPath={currentFullPath}
+              internalPath={internalPath}
               onSelect={onSelect}
               onExpand={onExpand}
               expandedIds={expandedIds}
@@ -160,7 +158,8 @@ export default function RegionSelector({ selectedPath = [], onChange, placeholde
                 key={region.id}
                 region={region}
                 level={0}
-                selectedPath={internalPath}
+                parentPath={[]}
+                internalPath={internalPath}
                 onSelect={handleSelect}
                 onExpand={handleExpand}
                 expandedIds={expandedIds}

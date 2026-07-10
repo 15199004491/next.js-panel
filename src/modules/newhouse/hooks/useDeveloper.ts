@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { Developer, PaginationResponse } from '../models';
 import { developerApi } from '../api/developerApi';
 
@@ -9,22 +9,32 @@ export function useDeveloper() {
   const [developer, setDeveloper] = useState<Developer | null>(null);
   const [pagination, setPagination] = useState({ page: 1, pageSize: 10, total: 0 });
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const fetchIdRef = useRef(0);
 
   // Fetch developers list
-  const fetchDevelopers = useCallback(async (page: number, pageSize: number, keyword?: string) => {
+  const fetchDevelopers = useCallback(async (page: number, pageSize: number, keyword?: string, region?: string[]) => {
+    const currentFetchId = ++fetchIdRef.current;
     setLoading(true);
     setError(null);
+    setDevelopers([]);
     try {
-      const response: PaginationResponse<Developer> = await developerApi.getList(page, pageSize, keyword);
-      setDevelopers(response.list);
-      setPagination({ page: response.page, pageSize: response.pageSize, total: response.total });
+      const response: PaginationResponse<Developer> = await developerApi.getList(page, pageSize, keyword, region);
+      if (currentFetchId === fetchIdRef.current) {
+        setDevelopers(response.list);
+        setPagination({ page: response.page, pageSize: response.pageSize, total: response.total });
+        setSelectedIds(new Set());
+      }
       return response;
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Failed to fetch developers';
-      setError(errorMsg);
+      if (currentFetchId === fetchIdRef.current) {
+        const errorMsg = err instanceof Error ? err.message : 'Failed to fetch developers';
+        setError(errorMsg);
+      }
       throw err;
     } finally {
-      setLoading(false);
+      if (currentFetchId === fetchIdRef.current) {
+        setLoading(false);
+      }
     }
   }, []);
 

@@ -30,6 +30,10 @@ const mockDevelopers: Developer[] = [
   { id: '4', name: 'Poly Developments', logo: 'https://via.placeholder.com/100x100', description: 'State-owned enterprise with diversified real estate portfolio including commercial, residential, and industrial properties.', entryYears: 5, projectsCount: 300, rating: 4.7, status: 'active', remark: 'Government-backed with strong policy support. Focuses on quality over quantity, delivering premium properties with excellent craftsmanship and attention to detail.', createdAt: '2024-01-04 14:00:00', updatedAt: '2024-01-12 09:15:00' },
   { id: '5', name: 'Longfor Properties', logo: 'https://via.placeholder.com/100x100', description: 'High-end residential and commercial property developer renowned for luxury projects and exceptional customer service.', entryYears: 9, projectsCount: 200, rating: 4.9, status: 'active', remark: 'Premium brand positioning with focus on high-end market segment. Award-winning designs and superior after-sales service. Strong brand loyalty among affluent buyers.', createdAt: '2024-01-05 10:30:00', updatedAt: '2024-01-11 11:20:00' },
   { id: '6', name: 'Sunac China', logo: 'https://via.placeholder.com/100x100', description: 'Comprehensive real estate development company with diversified business including residential, commercial, and cultural tourism projects.', entryYears: 3, projectsCount: 400, rating: 4.4, status: 'inactive', remark: 'Under restructuring due to financial difficulties. Paused new project development. Awaiting further updates on company status and future plans.', createdAt: '2024-01-06 15:00:00', updatedAt: '2024-01-10 13:40:00' },
+  { id: '7', name: 'New York Developers Inc.', logo: 'https://via.placeholder.com/100x100', description: 'Premier real estate development company based in Manhattan, specializing in luxury residential towers and mixed-use developments across New York City.', entryYears: 25, projectsCount: 150, rating: 4.9, status: 'active', remark: 'Iconic projects include several landmark skyscrapers in Manhattan. Renowned for innovative designs and exceptional quality standards.', createdAt: '2024-01-07 09:30:00', updatedAt: '2024-01-16 14:00:00' },
+  { id: '8', name: 'London Properties Group', logo: 'https://via.placeholder.com/100x100', description: 'Established property developer with extensive portfolio in prime London locations, focusing on luxury apartments and commercial properties.', entryYears: 30, projectsCount: 120, rating: 4.8, status: 'active', remark: 'Specializes in high-end residential developments in Mayfair, Knightsbridge and Chelsea. Strong reputation for delivering exceptional properties.', createdAt: '2024-01-08 11:00:00', updatedAt: '2024-01-17 10:30:00' },
+  { id: '9', name: 'NYC Luxury Homes', logo: 'https://via.placeholder.com/100x100', description: 'Exclusive developer focusing on ultra-luxury residential properties in New Yorks most prestigious neighborhoods.', entryYears: 15, projectsCount: 80, rating: 5.0, status: 'active', remark: 'Developer of some of the most expensive residential properties in Manhattan. Known for bespoke designs and premium finishes.', createdAt: '2024-01-09 14:00:00', updatedAt: '2024-01-18 16:00:00' },
+  { id: '10', name: 'London Capital Developments', logo: 'https://via.placeholder.com/100x100', description: 'Leading developer in Central London, delivering high-quality residential and commercial projects across the city.', entryYears: 20, projectsCount: 95, rating: 4.7, status: 'active', remark: 'Strong track record in regeneration projects and mixed-use developments. Committed to sustainable building practices.', createdAt: '2024-01-10 10:30:00', updatedAt: '2024-01-19 09:15:00' },
 ];
 
 export const mockGetNewhouses = (page: number, pageSize: number, keyword?: string, region?: string[]): PaginationResponse<Newhouse> => {
@@ -39,8 +43,14 @@ export const mockGetNewhouses = (page: number, pageSize: number, keyword?: strin
     filtered = filtered.filter(item => item.name.toLowerCase().includes(lowerKeyword) || item.address.toLowerCase().includes(lowerKeyword));
   }
   if (region && region.length > 0) {
-    const regionStr = region.join('').toLowerCase();
-    filtered = filtered.filter(item => item.address.toLowerCase().includes(regionStr));
+    filtered = filtered.filter(item => {
+      const addressLower = item.address.toLowerCase();
+      return region.some(r => {
+        const regionLower = r.toLowerCase();
+        const regex = new RegExp(`\\b${regionLower}\\b`, 'gi');
+        return regex.test(addressLower);
+      });
+    });
   }
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
@@ -73,11 +83,18 @@ export const mockDeleteNewhouse = (id: string): boolean => {
   return false;
 };
 
-export const mockGetDevelopers = (page: number, pageSize: number, keyword?: string): PaginationResponse<Developer> => {
+export const mockGetDevelopers = (page: number, pageSize: number, keyword?: string, region?: string[]): PaginationResponse<Developer> => {
   let filtered = mockDevelopers;
   if (keyword) {
     const lowerKeyword = keyword.toLowerCase();
     filtered = mockDevelopers.filter(item => item.name.toLowerCase().includes(lowerKeyword) || item.description.toLowerCase().includes(lowerKeyword));
+  }
+  if (region && region.length > 0) {
+    const regionLower = region.map(r => r.toLowerCase());
+    filtered = filtered.filter(item => {
+      const nameLower = item.name.toLowerCase();
+      return regionLower.some(r => nameLower.includes(r));
+    });
   }
   const start = (page - 1) * pageSize;
   const end = start + pageSize;

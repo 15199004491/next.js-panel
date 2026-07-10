@@ -4,13 +4,17 @@ import { mockGetDevelopers, mockGetDeveloperById, mockCreateDeveloper, mockUpdat
 const isMock = process.env.NEXT_PUBLIC_USE_MOCK !== 'false';
 
 export const developerApi = {
-  getList: async (page: number, pageSize: number, keyword?: string): Promise<PaginationResponse<Developer>> => {
+  getList: async (page: number, pageSize: number, keyword?: string, region?: string[]): Promise<PaginationResponse<Developer>> => {
     if (isMock) {
       await new Promise(resolve => setTimeout(resolve, 500));
-      return mockGetDevelopers(page, pageSize, keyword);
+      return mockGetDevelopers(page, pageSize, keyword, region);
     }
     
-    const response = await fetch(`/api/developers?page=${page}&pageSize=${pageSize}${keyword ? `&keyword=${encodeURIComponent(keyword)}` : ''}`);
+    const params = new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString() });
+    if (keyword) params.append('keyword', keyword);
+    if (region && region.length > 0) params.append('region', JSON.stringify(region));
+    
+    const response = await fetch(`/api/developers?${params.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch developers');
     return response.json();
   },

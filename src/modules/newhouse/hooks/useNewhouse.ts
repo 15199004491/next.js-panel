@@ -34,6 +34,7 @@ export function useNewhouse(): UseNewhouseReturn {
   const fetchNewhouses = useCallback(async (page: number, pageSize: number, keyword?: string, region?: string[]) => {
     setLoading(true);
     setError(null);
+    setNewhouses([]);
     try {
       const result: PaginationResponse<Newhouse> = await newhouseApi.getList(page, pageSize, keyword, region);
       setNewhouses(result.list);

@@ -182,7 +182,7 @@ export default function NewhouseList() {
   };
 
   const handleCreateSuccess = () => {
-    fetchNewhouses(pagination.page, pagination.pageSize, keyword);
+    fetchNewhouses(pagination.page, pagination.pageSize, keyword, selectedRegion);
     setIsCreateModalOpen(false);
   };
 
