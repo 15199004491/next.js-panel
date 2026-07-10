@@ -3,18 +3,19 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, ExternalLink, Star, Plus, Trash2 } from 'lucide-react';
-import { useNewhouseStore } from '@/src/modules/newhouse/store';
+import { useDeveloper } from '@/src/modules/newhouse/hooks/useDeveloper';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
 import { Checkbox } from '@/src/ui/checkbox';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/src/ui/table';
 import { Badge } from '@/src/ui/badge';
 import { Card, CardContent } from '@/src/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/src/ui/dialog';
 import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
 import CreateModal from '../components/CreateModal';
+import { ConfirmDialog } from '@/src/components/confirm-dialog';
 import { generateCode, generateContactPhone, generateTotalPayment, generateUpdatedBy } from '@/src/modules/newhouse/mock';
+import type { Developer } from '@/src/modules/newhouse/models';
 
 // Column configuration with cell renderers
 const columns = [
@@ -22,7 +23,7 @@ const columns = [
     key: 'code', 
     label: 'Code', 
     width: 'w-28',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <span className="text-sm text-muted-foreground">{generateCode(dev.id)}</span>
     ),
   },
@@ -30,7 +31,7 @@ const columns = [
     key: 'name', 
     label: 'Name', 
     width: 'w-[300px]',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <>
         <div className="font-medium">{dev.name}</div>
         <div className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
@@ -43,13 +44,13 @@ const columns = [
     key: 'entryYears', 
     label: 'Years', 
     width: 'w-52',
-    render: (dev: typeof developers[0]) => <span className="text-sm">{dev.entryYears}</span>,
+    render: (dev: Developer) => <span className="text-sm">{dev.entryYears}</span>,
   },
   { 
     key: 'projectsCount', 
     label: 'Projects', 
     width: 'w-24',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <Link href="/newhouses" className="inline-flex items-center gap-1 text-primary hover:text-primary/80">
         {dev.projectsCount}
         <ExternalLink className="w-3 h-3" />
@@ -60,7 +61,7 @@ const columns = [
     key: 'rating', 
     label: 'Rating', 
     width: 'w-20',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <div className="flex items-center gap-1">
         <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
         <span className="text-sm">{dev.rating}</span>
@@ -71,7 +72,7 @@ const columns = [
     key: 'status', 
     label: 'Status', 
     width: 'w-20',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <Badge variant={dev.status === 'active' ? 'success' : 'secondary'}>
         {dev.status === 'active' ? 'Active' : 'Inactive'}
       </Badge>
@@ -81,7 +82,7 @@ const columns = [
     key: 'contactPhone', 
     label: 'Contact Phone', 
     width: 'w-44',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <span className="text-sm text-muted-foreground">{generateContactPhone(dev.id)}</span>
     ),
   },
@@ -89,7 +90,7 @@ const columns = [
     key: 'totalPayment', 
     label: 'Total Payment', 
     width: 'w-36',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <span className="text-sm text-muted-foreground">${generateTotalPayment(dev.id)}</span>
     ),
   },
@@ -97,7 +98,7 @@ const columns = [
     key: 'updatedBy', 
     label: 'Updated', 
     width: 'w-[450px]',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <span className="text-sm text-muted-foreground">{generateUpdatedBy(dev.id)}</span>
     ),
   },
@@ -105,7 +106,7 @@ const columns = [
     key: 'remark', 
     label: 'Remark', 
     width: 'w-[400px]',
-    render: (dev: typeof developers[0]) => (
+    render: (dev: Developer) => (
       <div className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
         {dev.remark}
       </div>
@@ -116,30 +117,23 @@ const columns = [
 export default function DeveloperList() {
   const [keyword, setKeyword] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
   const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
-  const { developers, pagination, loading, error, fetchDevelopers, handleDeleteDeveloper } = useNewhouseStore();
-
-  const isAllSelected = developers.length > 0 && developers.every(dev => selectedIds.has(dev.id));
-
-  const handleSelectAll = () => {
-    if (isAllSelected) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(developers.map(dev => dev.id)));
-    }
-  };
-
-  const handleSelect = (id: string) => {
-    const newSelected = new Set(selectedIds);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedIds(newSelected);
-  };
+  
+  const {
+    developers,
+    pagination,
+    loading,
+    error,
+    selectedIds,
+    isAllSelected,
+    fetchDevelopers,
+    deleteDeveloper,
+    batchDeleteDevelopers,
+    selectAll,
+    toggleSelect,
+    clearSelection,
+  } = useDeveloper();
 
   useEffect(() => {
     fetchDevelopers(pagination.page, pagination.pageSize, keyword);
@@ -160,7 +154,7 @@ export default function DeveloperList() {
   const handleConfirmDelete = async () => {
     if (!deleteConfirm) return;
     try {
-      await handleDeleteDeveloper(deleteConfirm.id);
+      await deleteDeveloper(deleteConfirm.id);
       setDeleteConfirm(null);
     } catch (err) {
       console.error('Delete failed:', err);
@@ -179,10 +173,7 @@ export default function DeveloperList() {
 
   const handleConfirmBatchDelete = async () => {
     try {
-      for (const id of selectedIds) {
-        await handleDeleteDeveloper(id);
-      }
-      setSelectedIds(new Set());
+      await batchDeleteDevelopers(selectedIds);
       setBatchDeleteConfirm(false);
     } catch (err) {
       console.error('Batch delete failed:', err);
@@ -193,13 +184,28 @@ export default function DeveloperList() {
     setBatchDeleteConfirm(false);
   };
 
+  const handleCreateSuccess = () => {
+    fetchDevelopers(pagination.page, pagination.pageSize, keyword);
+    setIsCreateModalOpen(false);
+  };
+
+  const getDeleteDescription = () => {
+    const target = <span className="font-medium">{deleteConfirm ? deleteConfirm.name : selectedIds.size}</span>;
+    return (
+      <>
+        Are you sure you want to delete {target}?
+        <span className="block mt-2">This action cannot be undone.</span>
+      </>
+    );
+  };
+
   const columnsWithActions = [
     ...columns,
     {
       key: 'actions',
       label: 'Actions',
       width: 'w-32',
-      render: (dev: typeof developers[0]) => (
+      render: (dev: Developer) => (
         <div className="flex items-center gap-2">
           <Link 
             href={`/developers/${dev.id}/edit?readonly=true`}
@@ -280,7 +286,7 @@ export default function DeveloperList() {
                 <TableRow>
                   <TableHead className="w-12">
                     <div className="flex items-center h-full">
-                      <Checkbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
+                      <Checkbox checked={isAllSelected} onCheckedChange={selectAll} />
                     </div>
                   </TableHead>
                   {columnsWithActions.map((column) => (
@@ -294,7 +300,7 @@ export default function DeveloperList() {
                 {developers.map((developer) => (
                   <TableRow key={developer.id}>
                     <TableCell className="w-12">
-                      <Checkbox checked={selectedIds.has(developer.id)} onCheckedChange={() => handleSelect(developer.id)} />
+                      <Checkbox checked={selectedIds.has(developer.id)} onCheckedChange={() => toggleSelect(developer.id)} />
                     </TableCell>
                     {columnsWithActions.map((column) => (
                       <TableCell key={column.key} className={column.key === 'actions' ? 'whitespace-nowrap' : ''}>
@@ -324,50 +330,25 @@ export default function DeveloperList() {
         />
       </div>
 
-      {/* Delete Confirm Modal */}
-      <Dialog open={!!deleteConfirm} onOpenChange={(open) => !open && handleCancelDelete()}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Confirm Delete</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete <span className="font-medium">{deleteConfirm?.name}</span>?
-              <span className="block mt-2">This action cannot be undone.</span>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-3">
-            <Button variant="outline" onClick={handleCancelDelete}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleConfirmDelete}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Batch Delete Confirm Modal */}
-      <Dialog open={batchDeleteConfirm} onOpenChange={(open) => !open && handleCancelBatchDelete()}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Confirm Batch Delete</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete <span className="font-medium">{selectedIds.size}</span> developers?
-              <span className="block mt-2">This action cannot be undone.</span>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="gap-3">
-            <Button variant="outline" onClick={handleCancelBatchDelete}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleConfirmBatchDelete}>
-              Delete All
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={!!deleteConfirm || batchDeleteConfirm}
+        onClose={() => {
+          setDeleteConfirm(null);
+          setBatchDeleteConfirm(false);
+        }}
+        title={deleteConfirm ? 'Confirm Delete' : 'Confirm Batch Delete'}
+        description={getDeleteDescription()}
+        confirmText={deleteConfirm ? 'Delete' : 'Delete All'}
+        onConfirm={deleteConfirm ? handleConfirmDelete : handleConfirmBatchDelete}
+      />
 
       {/* Create Modal */}
-      <CreateModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
+      <CreateModal 
+        isOpen={isCreateModalOpen} 
+        onClose={() => setIsCreateModalOpen(false)} 
+        onSuccess={handleCreateSuccess}
+      />
     </div>
   );
 }
