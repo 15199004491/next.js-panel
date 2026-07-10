@@ -4,6 +4,7 @@ interface AppState {
   sidebarOpen: boolean;
   theme: 'light' | 'dark';
   currentUser: User | null;
+  selectedRegion: string[];
 }
 
 interface User {
@@ -18,6 +19,7 @@ export const useAppStore = () => {
     sidebarOpen: true,
     theme: 'light',
     currentUser: null,
+    selectedRegion: [],
   });
 
   const toggleSidebar = useCallback(() => {
@@ -38,11 +40,21 @@ export const useAppStore = () => {
     setState((prev) => ({ ...prev, currentUser: null }));
   }, []);
 
+  const setSelectedRegion = useCallback((region: string[]) => {
+    setState((prev) => ({ ...prev, selectedRegion: region }));
+  }, []);
+
+  const clearSelectedRegion = useCallback(() => {
+    setState((prev) => ({ ...prev, selectedRegion: [] }));
+  }, []);
+
   return {
     state,
     toggleSidebar,
     setTheme,
     setCurrentUser,
     logout,
+    setSelectedRegion,
+    clearSelectedRegion,
   };
 };

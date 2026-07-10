@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, DollarSign, Plus, Trash2 } from 'lucide-react';
 import { useNewhouse } from '@/src/modules/newhouse/hooks/useNewhouse';
+import { useAppStore } from '@/src/core/store';
 import { Button } from '@/src/ui/button';
 import { Input } from '@/src/ui/input';
 import { Checkbox } from '@/src/ui/checkbox';
@@ -109,6 +110,9 @@ export default function NewhouseList() {
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
   const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
   
+  const { state } = useAppStore();
+  const { selectedRegion } = state;
+  
   const {
     newhouses,
     pagination,
@@ -125,15 +129,19 @@ export default function NewhouseList() {
   } = useNewhouse();
 
   useEffect(() => {
-    fetchNewhouses(pagination.page, pagination.pageSize, keyword);
+    fetchNewhouses(pagination.page, pagination.pageSize, keyword, selectedRegion);
   }, []);
 
+  useEffect(() => {
+    fetchNewhouses(1, pagination.pageSize, keyword, selectedRegion);
+  }, [selectedRegion]);
+
   const handleSearch = () => {
-    fetchNewhouses(1, pagination.pageSize, keyword);
+    fetchNewhouses(1, pagination.pageSize, keyword, selectedRegion);
   };
 
   const handlePageChange = (page: number) => {
-    fetchNewhouses(page, pagination.pageSize, keyword);
+    fetchNewhouses(page, pagination.pageSize, keyword, selectedRegion);
   };
 
   const handleDeleteClick = (id: string, name: string) => {

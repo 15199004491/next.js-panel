@@ -31,11 +31,11 @@ export function useNewhouse(): UseNewhouseReturn {
   const [error, setError] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const fetchNewhouses = useCallback(async (page: number, pageSize: number, keyword?: string) => {
+  const fetchNewhouses = useCallback(async (page: number, pageSize: number, keyword?: string, region?: string[]) => {
     setLoading(true);
     setError(null);
     try {
-      const result: PaginationResponse<Newhouse> = await newhouseApi.getList(page, pageSize, keyword);
+      const result: PaginationResponse<Newhouse> = await newhouseApi.getList(page, pageSize, keyword, region);
       setNewhouses(result.list);
       setPagination({ page: result.page, pageSize: result.pageSize, total: result.total });
       setSelectedIds(new Set());
