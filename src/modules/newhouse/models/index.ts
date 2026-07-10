@@ -3,9 +3,8 @@ export interface Newhouse {
   name: string;
   address: string;
   price: number;
-  area: number;
-  bedrooms: number;
-  bathrooms: number;
+  developer: string;
+  contactPhone: string;
   status: 'available' | 'sold' | 'reserved';
   images: string[];
   description: string;
