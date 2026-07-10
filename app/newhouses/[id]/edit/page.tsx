@@ -1,9 +1,9 @@
 'use client';
 
-import Header from '../../../../src/layouts/header';
-import Sidebar from '../../../../src/layouts/sidebar';
-import MainContent from '../../../../src/layouts/main-content';
-import NewhouseEdit from '../../../../src/modules/newhouse/pages/newhouse/Edit';
+import Header from '@/src/layouts/header';
+import Sidebar from '@/src/layouts/sidebar';
+import MainContent from '@/src/layouts/main-content';
+import NewhouseEdit from '@/src/modules/newhouse/pages/newhouse/Edit';
 
 export default function EditPage() {
   return (

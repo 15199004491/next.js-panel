@@ -1,20 +1,17 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import Header from '../../../src/layouts/header';
-import Sidebar from '../../../src/layouts/sidebar';
-import MainContent from '../../../src/layouts/main-content';
-import DeveloperDetail from '../../../src/modules/newhouse/developer/pages/Detail';
+import Header from '@/src/layouts/header';
+import Sidebar from '@/src/layouts/sidebar';
+import MainContent from '@/src/layouts/main-content';
+import DeveloperEdit from '@/src/modules/newhouse/pages/developer/Edit';
 
 export default function DeveloperDetailPage() {
-  const params = useParams<{ id: string }>();
-  const id = params?.id || '';
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       <Sidebar />
       <MainContent>
-        <DeveloperDetail id={id} />
+        <DeveloperEdit />
       </MainContent>
     </div>
   );
