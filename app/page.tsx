@@ -1,7 +1,14 @@
+'use client';
+
+import dynamic from 'next/dynamic';
 import Header from '@/src/layouts/header';
 import Sidebar from '@/src/layouts/sidebar';
 import MainContent from '@/src/layouts/main-content';
-import DeveloperList from '@/src/modules/newhouse/pages/developer/List';
+
+const DeveloperList = dynamic(() => import('@/src/modules/newhouse/pages/developer/List'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>,
+});
 
 export default function HomePage() {
   return (

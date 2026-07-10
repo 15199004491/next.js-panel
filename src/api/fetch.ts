@@ -32,9 +32,9 @@ export const createFetch = async <T = unknown>(
   try {
     const token = localStorage.getItem('token');
 
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(fetchOptions.headers as HeadersInit),
+      ...(fetchOptions.headers as Record<string, string>),
     };
 
     if (token) {
@@ -60,7 +60,7 @@ export const createFetch = async <T = unknown>(
       throw new Error(result.message || 'Request failed');
     }
 
-    return result.data !== undefined ? result.data : result;
+    return result.data !== undefined ? result.data : (result as unknown as T);
   } catch (error) {
     if ((error as Error).name === 'AbortError') {
       console.error('Request Timeout');

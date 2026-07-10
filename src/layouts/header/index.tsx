@@ -8,7 +8,7 @@ export default function Header() {
   const { state, toggleSidebar, setSelectedRegion, clearSelectedRegion } = useAppStore();
   const { selectedRegion } = state;
 
-  const handleRegionChange = (path: string[], region: Region) => {
+  const handleRegionChange = (path: string[], region: Region | null) => {
     if (path.length === 0) {
       clearSelectedRegion();
     } else {

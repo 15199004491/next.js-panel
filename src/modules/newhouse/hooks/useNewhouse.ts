@@ -12,7 +12,7 @@ interface UseNewhouseReturn {
   error: string | null;
   selectedIds: Set<string>;
   isAllSelected: boolean;
-  fetchNewhouses: (page: number, pageSize: number, keyword?: string) => Promise<void>;
+  fetchNewhouses: (page: number, pageSize: number, keyword?: string, region?: string[]) => Promise<void>;
   fetchNewhouseById: (id: string) => Promise<void>;
   createNewhouse: (data: Omit<Newhouse, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Newhouse>;
   updateNewhouse: (id: string, data: Partial<Newhouse>) => Promise<Newhouse>;
