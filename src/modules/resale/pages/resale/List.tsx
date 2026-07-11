@@ -15,7 +15,8 @@ import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
 import ResaleCreateModal from '@/src/modules/resale/components/ResaleCreateModal';
 import { ConfirmDialog } from '@/src/components/confirm-dialog';
-import { generateCode, generateUpdatedBy, formatPhoneNumber, calculateDaysOnMarket } from '@/src/modules/resale/mock';
+import ImageViewer from '@/src/modules/resale/components/ImageViewer';
+import { generateCode, generateUpdatedBy, formatPhoneNumber, calculateDaysOnMarket, generatePropertyImages } from '@/src/modules/resale/mock';
 import type { ResaleProperty } from '@/src/modules/resale/models';
 
 const columns = [
@@ -29,10 +30,10 @@ const columns = [
   },
   { 
     key: 'title', 
-    label: 'Title', 
-    width: 'w-[200px]',
+    label: 'Community Name', 
+    width: 'w-[280px]',
     render: (prop: ResaleProperty) => (
-      <span className="font-medium">{prop.title}</span>
+      <span className="font-medium whitespace-nowrap">{prop.title}</span>
     ),
   },
   { 
@@ -46,9 +47,9 @@ const columns = [
   { 
     key: 'area', 
     label: 'Area', 
-    width: 'w-20',
+    width: 'w-36',
     render: (prop: ResaleProperty) => (
-      <span className="text-sm">{prop.area} m²</span>
+      <span className="text-sm whitespace-nowrap">{prop.area} m²</span>
     ),
   },
   { 
@@ -80,17 +81,21 @@ const columns = [
     label: 'Orientation', 
     width: 'w-24',
     render: (prop: ResaleProperty) => (
-      <Badge variant="outline">
-        {prop.orientation.charAt(0).toUpperCase() + prop.orientation.slice(1)}
-      </Badge>
+      <span className="text-sm">{prop.orientation}</span>
     ),
   },
   { 
     key: 'hasImages', 
     label: 'Images', 
-    width: 'w-12',
-    render: (prop: ResaleProperty) => (
-      <Image className={`w-5 h-5 ${prop.hasImages ? 'text-green-500' : 'text-gray-300'}`} />
+    width: 'w-16',
+    render: (prop: ResaleProperty, onImageClick: (id: string) => void) => (
+      <button
+        onClick={() => prop.hasImages && onImageClick(prop.id)}
+        className={`flex items-center gap-1 text-sm ${prop.hasImages ? 'text-green-500 hover:text-green-600 cursor-pointer' : 'text-gray-300 cursor-not-allowed'}`}
+      >
+        <Image className="w-4 h-4" />
+        <span>{prop.hasImages ? 'View' : '-'}</span>
+      </button>
     ),
   },
   { 
@@ -108,9 +113,7 @@ const columns = [
     label: 'Type', 
     width: 'w-24',
     render: (prop: ResaleProperty) => (
-      <Badge variant="secondary">
-        {prop.propertyType.charAt(0).toUpperCase() + prop.propertyType.slice(1)}
-      </Badge>
+      <span className="text-sm">{prop.propertyType}</span>
     ),
   },
   { 
@@ -118,11 +121,7 @@ const columns = [
     label: 'Category', 
     width: 'w-28',
     render: (prop: ResaleProperty) => (
-      <Badge variant="outline">
-        {prop.houseCategory === 'apartment' ? 'Apartment' : 
-         prop.houseCategory === 'residential' ? 'Residential' : 
-         prop.houseCategory === 'commercial' ? 'Commercial' : 'Other'}
-      </Badge>
+      <span className="text-sm">{prop.houseCategory}</span>
     ),
   },
   { 
@@ -130,9 +129,7 @@ const columns = [
     label: 'Decoration', 
     width: 'w-24',
     render: (prop: ResaleProperty) => (
-      <Badge variant="outline">
-        {prop.decoration.charAt(0).toUpperCase() + prop.decoration.slice(1)}
-      </Badge>
+      <span className="text-sm">{prop.decoration}</span>
     ),
   },
   { 
@@ -190,6 +187,8 @@ export default function ResaleList() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
   const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
+  const [currentPropertyId, setCurrentPropertyId] = useState<string | null>(null);
   
   const { state } = useAppStore();
   const { selectedRegion } = state;
@@ -265,6 +264,16 @@ export default function ResaleList() {
   const handleCreateSuccess = () => {
     fetchResaleProperties(pagination.page, pagination.pageSize, keyword, selectedRegion);
     setIsCreateModalOpen(false);
+  };
+
+  const handleImageClick = (propertyId: string) => {
+    setCurrentPropertyId(propertyId);
+    setImageViewerOpen(true);
+  };
+
+  const getCurrentImages = () => {
+    if (!currentPropertyId) return [];
+    return generatePropertyImages(currentPropertyId);
   };
 
   const getDeleteDescription = () => {
@@ -349,7 +358,7 @@ export default function ResaleList() {
                         </TableCell>
                         {columns.map((column) => (
                           <TableCell key={column.key} className={column.key === 'contact' ? 'whitespace-nowrap' : ''}>
-                            {column.render?.(property)}
+                            {column.render?.(property, handleImageClick)}
                           </TableCell>
                         ))}
                         <TableCell className="w-[220px] sticky right-0 inset-y-0 z-10 whitespace-nowrap bg-white shadow-[inset_1px_0_0_#e5e7eb]">
@@ -405,6 +414,12 @@ export default function ResaleList() {
         isOpen={isCreateModalOpen} 
         onClose={() => setIsCreateModalOpen(false)} 
         onSuccess={handleCreateSuccess}
+      />
+
+      <ImageViewer
+        open={imageViewerOpen}
+        onOpenChange={setImageViewerOpen}
+        images={getCurrentImages()}
       />
     </div>
   );

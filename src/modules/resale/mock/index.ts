@@ -124,3 +124,13 @@ export const calculateDaysOnMarket = (createdAt: string): string => {
   const years = Math.floor(diffDays / 365);
   return `${years} year${years > 1 ? 's' : ''}`;
 };
+
+export const generatePropertyImages = (id: string): string[] => {
+  const seed = parseInt(id, 10) || 1;
+  
+  return [
+    `https://picsum.photos/seed/${seed}living/1200/800`,
+    `https://picsum.photos/seed/${seed}bed/1200/800`,
+    `https://picsum.photos/seed/${seed}kitchen/1200/800`,
+  ];
+};
