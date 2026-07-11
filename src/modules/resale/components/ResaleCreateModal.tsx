@@ -35,6 +35,22 @@ export default function ResaleCreateModal({ isOpen, onClose, onSuccess }: Create
     contactName: string;
     contactPhone: string;
   }) => {
+    const currentYear = new Date().getFullYear();
+    const age = parseInt(formData.age) || 0;
+    
+    const getHouseCategory = (propertyType: string): 'apartment' | 'residential' | 'commercial' | 'other' => {
+      switch (propertyType) {
+        case 'apartment':
+        case 'condo':
+          return 'apartment';
+        case 'villa':
+        case 'townhouse':
+          return 'residential';
+        default:
+          return 'other';
+      }
+    };
+    
     const propertyData = {
       title: formData.title,
       address: formData.address,
@@ -43,11 +59,13 @@ export default function ResaleCreateModal({ isOpen, onClose, onSuccess }: Create
       layout: formData.layout,
       floor: formData.floor,
       totalFloors: parseInt(formData.totalFloors) || 0,
-      age: parseInt(formData.age) || 0,
+      age: age,
+      buildYear: currentYear - age,
       orientation: formData.orientation,
       hasImages: formData.hasImages,
       source: formData.source,
       propertyType: formData.propertyType,
+      houseCategory: getHouseCategory(formData.propertyType),
       decoration: formData.decoration,
       status: formData.status,
       description: formData.description,

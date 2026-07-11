@@ -19,12 +19,19 @@ import ImageViewer from '@/src/modules/resale/components/ImageViewer';
 import { generateCode, generateUpdatedBy, formatPhoneNumber, calculateDaysOnMarket, generatePropertyImages } from '@/src/modules/resale/mock';
 import type { ResaleProperty } from '@/src/modules/resale/models';
 
-const columns = [
+interface Column {
+  key: string;
+  label: string;
+  width: string;
+  render?: (prop: ResaleProperty, onImageClick?: (id: string) => void) => React.ReactNode;
+}
+
+const columns: Column[] = [
   { 
     key: 'code', 
     label: 'Code', 
     width: 'w-24',
-    render: (prop: ResaleProperty) => (
+    render: (prop) => (
       <span className="text-sm text-muted-foreground">{generateCode(prop.id)}</span>
     ),
   },
@@ -32,7 +39,7 @@ const columns = [
     key: 'title', 
     label: 'Community Name', 
     width: 'w-[280px]',
-    render: (prop: ResaleProperty) => (
+    render: (prop) => (
       <span className="font-medium whitespace-nowrap">{prop.title}</span>
     ),
   },
@@ -40,7 +47,7 @@ const columns = [
     key: 'price', 
     label: 'Price', 
     width: 'w-32',
-    render: (prop: ResaleProperty) => (
+    render: (prop) => (
       <span className="font-medium">${prop.price.toLocaleString()}</span>
     ),
   },
@@ -48,7 +55,7 @@ const columns = [
     key: 'area', 
     label: 'Area', 
     width: 'w-36',
-    render: (prop: ResaleProperty) => (
+    render: (prop) => (
       <span className="text-sm whitespace-nowrap">{prop.area} m²</span>
     ),
   },
@@ -56,7 +63,7 @@ const columns = [
     key: 'layout', 
     label: 'Layout', 
     width: 'w-20',
-    render: (prop: ResaleProperty) => (
+    render: (prop) => (
       <span className="text-sm font-medium">{prop.layout}</span>
     ),
   },
@@ -64,7 +71,7 @@ const columns = [
     key: 'floor', 
     label: 'Floor', 
     width: 'w-20',
-    render: (prop: ResaleProperty) => (
+    render: (prop) => (
       <span className="text-sm">{prop.floor}</span>
     ),
   },
@@ -72,7 +79,7 @@ const columns = [
     key: 'buildYear', 
     label: 'Build Year', 
     width: 'w-24',
-    render: (prop: ResaleProperty) => (
+    render: (prop) => (
       <span className="text-sm">{prop.buildYear}</span>
     ),
   },
@@ -80,7 +87,7 @@ const columns = [
     key: 'orientation', 
     label: 'Orientation', 
     width: 'w-24',
-    render: (prop: ResaleProperty) => (
+    render: (prop) => (
       <span className="text-sm">{prop.orientation}</span>
     ),
   },
@@ -88,9 +95,9 @@ const columns = [
     key: 'hasImages', 
     label: 'Images', 
     width: 'w-16',
-    render: (prop: ResaleProperty, onImageClick: (id: string) => void) => (
+    render: (prop, onImageClick) => (
       <button
-        onClick={() => prop.hasImages && onImageClick(prop.id)}
+        onClick={() => prop.hasImages && onImageClick?.(prop.id)}
         className={`flex items-center gap-1 text-sm ${prop.hasImages ? 'text-green-500 hover:text-green-600 cursor-pointer' : 'text-gray-300 cursor-not-allowed'}`}
       >
         <Image className="w-4 h-4" />
@@ -326,7 +333,7 @@ export default function ResaleList() {
           <div className="relative">
             <div className="overflow-x-auto">
               {loading ? (
-                <TableSkeleton columns={[...columns, { key: 'actions', label: 'Actions', width: 'w-[220px]' }]} />
+                <TableSkeleton columns={[...columns.map(col => ({ key: col.key, width: col.width })), { key: 'actions', width: 'w-[220px]' }]} />
               ) : error ? (
                 <div className="p-6 text-center">
                   <p className="text-destructive">{error}</p>
