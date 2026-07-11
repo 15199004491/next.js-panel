@@ -1,15 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Save } from 'lucide-react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { Button } from '@/src/ui/button';
 import { Card, CardContent } from '@/src/ui/card';
 import { useResale } from '@/src/modules/resale/hooks/useResale';
 import ResaleForm from '@/src/modules/resale/components/ResaleForm';
 import type { ResaleProperty } from '@/src/modules/resale/models';
 import { FormSkeleton } from '@/src/components/form-skeleton';
 import { BackButton } from '@/src/components/back-button';
+import { useToast } from '@/src/components/toast';
 
 export default function ResaleEdit() {
   const router = useRouter();
@@ -19,6 +18,7 @@ export default function ResaleEdit() {
   const readonly = searchParams.get('readonly') === 'true';
   
   const { property, loading, error, fetchResalePropertyById, updateResaleProperty } = useResale();
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (!id) return;
@@ -71,7 +71,8 @@ export default function ResaleEdit() {
     };
 
     await updateResaleProperty(property.id, updatedData);
-    router.push('/resale');
+    addToast('success', 'Resale property updated successfully');
+    setTimeout(() => router.back(), 500);
   };
 
   const handleCancel = () => {
@@ -117,20 +118,6 @@ export default function ResaleEdit() {
             disabled={readonly}
             onSubmit={handleSubmit}
           />
-          
-          <div className="flex justify-end gap-3 pt-4">
-            <BackButton onClick={handleCancel} variant="outline" />
-            {!readonly && (
-              <Button onClick={(e) => {
-                e.preventDefault();
-                const form = document.querySelector('form') as HTMLFormElement;
-                form?.submit();
-              }}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
-              </Button>
-            )}
-          </div>
         </CardContent>
       </Card>
     </div>

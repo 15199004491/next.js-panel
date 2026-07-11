@@ -10,6 +10,7 @@ import DeveloperForm from '@/src/modules/newhouse/components/DeveloperForm';
 import type { Developer } from '@/src/modules/newhouse/models';
 import { FormSkeleton } from '@/src/components/form-skeleton';
 import { BackButton } from '@/src/components/back-button';
+import { useToast } from '@/src/components/toast';
 
 export default function DeveloperEdit() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function DeveloperEdit() {
   const readonly = searchParams.get('readonly') === 'true';
   
   const { developer, loading, error, fetchDeveloperById, updateDeveloper } = useDeveloper();
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (!id) return;
@@ -49,7 +51,8 @@ export default function DeveloperEdit() {
     };
 
     await updateDeveloper(developer.id, updatedData);
-    router.push('/developers');
+    addToast('success', 'Developer updated successfully');
+    setTimeout(() => router.push('/developers'), 500);
   };
 
   const handleCancel = () => {
@@ -95,20 +98,6 @@ export default function DeveloperEdit() {
             disabled={readonly}
             onSubmit={handleSubmit}
           />
-          
-          <div className="flex justify-end gap-3 pt-4">
-            <BackButton onClick={handleCancel} variant="outline" />
-            {!readonly && (
-              <Button onClick={(e) => {
-                e.preventDefault();
-                const form = document.querySelector('form') as HTMLFormElement;
-                form?.submit();
-              }}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
-              </Button>
-            )}
-          </div>
         </CardContent>
       </Card>
     </div>

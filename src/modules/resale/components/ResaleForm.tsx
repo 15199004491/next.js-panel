@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Save } from 'lucide-react';
 import { Input } from '@/src/ui/input';
 import { Checkbox } from '@/src/ui/checkbox';
+import { Button } from '@/src/ui/button';
+import { BackButton } from '@/src/components/back-button';
 import type { ResaleProperty } from '@/src/modules/resale/models';
 
 interface ResaleFormProps {
@@ -390,7 +393,15 @@ export default function ResaleForm({ initialData, disabled = false, onSubmit }: 
         </div>
       </div>
 
-      <input type="submit" className="hidden" />
-    </form>
-  );
-}
+      <div className="flex justify-end gap-3 pt-4">
+          <BackButton onClick={() => window.history.back()} variant="outline" />
+          {!disabled && (
+            <Button type="submit">
+              <Save className="w-4 h-4 mr-2" />
+              Save Changes
+            </Button>
+          )}
+        </div>
+      </form>
+    );
+  }

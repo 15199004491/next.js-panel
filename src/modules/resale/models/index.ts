@@ -20,8 +20,8 @@ export interface ResaleProperty {
   remark: string;
   contactName: string;
   contactPhone: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface ResaleFilter {

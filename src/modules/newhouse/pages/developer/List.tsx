@@ -15,7 +15,8 @@ import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
 import DeveloperCreateModal from '@/src/modules/newhouse/components/DeveloperCreateModal';
 import { ConfirmDialog } from '@/src/components/confirm-dialog';
-import { generateCode, generateContactPhone, generateTotalPayment, generateUpdatedBy } from '@/src/modules/newhouse/mock';
+import { generateCode, generateContactPhone, generateTotalPayment } from '@/src/modules/newhouse/mock';
+import { formatTimestamp } from '@/src/lib/format';
 import type { Developer } from '@/src/modules/newhouse/models';
 
 const columns = [
@@ -95,11 +96,11 @@ const columns = [
     ),
   },
   { 
-    key: 'updatedBy', 
+    key: 'updatedAt', 
     label: 'Updated', 
-    width: 'w-[450px]',
+    width: 'w-[200px]',
     render: (dev: Developer) => (
-      <span className="text-sm text-muted-foreground">{generateUpdatedBy(dev.id)}</span>
+      <span className="text-sm whitespace-nowrap">{formatTimestamp(dev.updatedAt)}</span>
     ),
   },
   { 

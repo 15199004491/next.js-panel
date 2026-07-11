@@ -16,7 +16,8 @@ import { Pagination } from '@/src/components/pagination';
 import ResaleCreateModal from '@/src/modules/resale/components/ResaleCreateModal';
 import { ConfirmDialog } from '@/src/components/confirm-dialog';
 import ImageViewer from '@/src/modules/resale/components/ImageViewer';
-import { generateCode, generateUpdatedBy, formatPhoneNumber, calculateDaysOnMarket, generatePropertyImages } from '@/src/modules/resale/mock';
+import { generateCode, formatPhoneNumber, generatePropertyImages } from '@/src/modules/resale/mock';
+import { formatTimestamp, calculateDaysOnMarket } from '@/src/lib/format';
 import type { ResaleProperty } from '@/src/modules/resale/models';
 
 interface Column {
@@ -180,11 +181,11 @@ const columns: Column[] = [
     ),
   },
   { 
-    key: 'updated', 
+    key: 'updatedAt', 
     label: 'Updated', 
     width: 'w-[200px]',
     render: (prop: ResaleProperty) => (
-      <span className="text-sm text-muted-foreground">{generateUpdatedBy(prop.id)}</span>
+      <span className="text-sm whitespace-nowrap">{formatTimestamp(prop.updatedAt)}</span>
     ),
   },
 ];

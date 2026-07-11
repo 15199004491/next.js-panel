@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Save } from 'lucide-react';
 import { Input } from '@/src/ui/input';
+import { Button } from '@/src/ui/button';
+import { BackButton } from '@/src/components/back-button';
 import type { Developer } from '@/src/modules/newhouse/models';
 
 interface DeveloperFormProps {
@@ -180,7 +183,15 @@ export default function DeveloperForm({ initialData, disabled = false, onSubmit 
         />
       </div>
 
-      <input type="submit" className="hidden" />
-    </form>
-  );
-}
+      <div className="flex justify-end gap-3 pt-4">
+          <BackButton onClick={() => window.history.back()} variant="outline" />
+          {!disabled && (
+            <Button type="submit">
+              <Save className="w-4 h-4 mr-2" />
+              Save Changes
+            </Button>
+          )}
+        </div>
+      </form>
+    );
+  }

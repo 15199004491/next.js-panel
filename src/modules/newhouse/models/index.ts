@@ -8,8 +8,8 @@ export interface Newhouse {
   status: 'available' | 'sold' | 'reserved';
   images: string[];
   description: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface NewhouseFilter {
@@ -32,8 +32,8 @@ export interface Developer {
   rating: number;
   status: 'active' | 'inactive';
   remark: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface DeveloperFilter {

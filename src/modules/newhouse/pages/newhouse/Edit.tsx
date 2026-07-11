@@ -1,15 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Save } from 'lucide-react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { Button } from '@/src/ui/button';
 import { Card, CardContent } from '@/src/ui/card';
 import { useNewhouse } from '@/src/modules/newhouse/hooks/useNewhouse';
 import NewhouseForm from '@/src/modules/newhouse/components/NewhouseForm';
 import type { Newhouse } from '@/src/modules/newhouse/models';
 import { FormSkeleton } from '@/src/components/form-skeleton';
 import { BackButton } from '@/src/components/back-button';
+import { useToast } from '@/src/components/toast';
 
 export default function NewhouseEdit() {
   const router = useRouter();
@@ -19,6 +18,7 @@ export default function NewhouseEdit() {
   const readonly = searchParams.get('readonly') === 'true';
   
   const { newhouse, loading, error, fetchNewhouseById, updateNewhouse } = useNewhouse();
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (!id) return;
@@ -49,7 +49,8 @@ export default function NewhouseEdit() {
     };
 
     await updateNewhouse(newhouse.id, updatedData);
-    router.push('/newhouses');
+    addToast('success', 'Newhouse updated successfully');
+    setTimeout(() => router.back(), 500);
   };
 
   const handleCancel = () => {
@@ -95,20 +96,6 @@ export default function NewhouseEdit() {
             disabled={readonly}
             onSubmit={handleSubmit}
           />
-          
-          <div className="flex justify-end gap-3 pt-4">
-            <BackButton onClick={handleCancel} variant="outline" />
-            {!readonly && (
-              <Button onClick={(e) => {
-                e.preventDefault();
-                const form = document.querySelector('form') as HTMLFormElement;
-                form?.submit();
-              }}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
-              </Button>
-            )}
-          </div>
         </CardContent>
       </Card>
     </div>

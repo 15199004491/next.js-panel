@@ -16,6 +16,7 @@ import { TableSkeleton } from '@/src/components/table-skeleton';
 import { Pagination } from '@/src/components/pagination';
 import NewhouseCreateModal from '@/src/modules/newhouse/components/NewhouseCreateModal';
 import { ConfirmDialog } from '@/src/components/confirm-dialog';
+import { formatTimestamp } from '@/src/lib/format';
 import type { Newhouse } from '@/src/modules/newhouse/models';
 
 const getDeveloperId = (developerName: string): string => {
@@ -101,6 +102,14 @@ const columns = [
       <div className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
         {house.description}
       </div>
+    ),
+  },
+  { 
+    key: 'updatedAt', 
+    label: 'Updated', 
+    width: 'w-[200px]',
+    render: (house: Newhouse) => (
+      <span className="text-sm whitespace-nowrap">{formatTimestamp(house.updatedAt)}</span>
     ),
   },
 ];
