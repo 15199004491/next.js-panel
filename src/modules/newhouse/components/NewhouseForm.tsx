@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { Input } from '@/src/ui/input';
 import { Button } from '@/src/ui/button';
 import { BackButton } from '@/src/components/back-button';
@@ -11,6 +11,7 @@ interface NewhouseFormProps {
   initialData?: Newhouse | null;
   disabled?: boolean;
   onSubmit: (data: FormData) => void;
+  showBackButton?: boolean;
 }
 
 interface FormData {
@@ -35,7 +36,7 @@ const defaultFormData: FormData = {
   description: '',
 };
 
-export default function NewhouseForm({ initialData, disabled = false, onSubmit }: NewhouseFormProps) {
+export default function NewhouseForm({ initialData, disabled = false, onSubmit, showBackButton = true }: NewhouseFormProps) {
   const [formData, setFormData] = useState<FormData>(defaultFormData);
 
   useEffect(() => {
@@ -182,11 +183,11 @@ export default function NewhouseForm({ initialData, disabled = false, onSubmit }
       </div>
 
       <div className="flex justify-end gap-3 pt-4">
-          <BackButton onClick={() => window.history.back()} variant="outline" />
+          {showBackButton && <BackButton onClick={() => window.history.back()} variant="outline" />}
           {!disabled && (
             <Button type="submit">
-              <Save className="w-4 h-4 mr-2" />
-              Save Changes
+              <Send className="w-4 h-4 mr-2" />
+              Submit
             </Button>
           )}
         </div>

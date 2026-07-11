@@ -11,7 +11,7 @@ interface BackButtonProps {
 
 export function BackButton({ onClick, variant = 'ghost', className = '' }: BackButtonProps) {
   return (
-    <Button variant={variant} onClick={onClick} className={className}>
+    <Button type="button" variant={variant} onClick={onClick} className={className}>
       <ArrowLeft className="w-4 h-4" />
       Back
     </Button>

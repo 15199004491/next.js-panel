@@ -50,16 +50,8 @@ export default function DeveloperCreateModal({ isOpen, onClose, onSuccess }: Cre
           </div>
         </DialogHeader>
         
-        <DeveloperForm onSubmit={handleSubmit} />
+        <DeveloperForm onSubmit={handleSubmit} showBackButton={false} />
         
-        <DialogFooter className="gap-3">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit" form="developer-form">
-            Create
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

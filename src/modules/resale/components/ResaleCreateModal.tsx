@@ -88,16 +88,8 @@ export default function ResaleCreateModal({ isOpen, onClose, onSuccess }: Create
           </div>
         </DialogHeader>
         
-        <ResaleForm onSubmit={handleSubmit} />
+        <ResaleForm onSubmit={handleSubmit} showBackButton={false} />
         
-        <DialogFooter className="gap-3">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit" form="resale-form">
-            Create
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

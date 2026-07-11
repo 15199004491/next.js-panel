@@ -50,16 +50,8 @@ export default function NewhouseCreateModal({ isOpen, onClose, onSuccess }: Crea
           </div>
         </DialogHeader>
         
-        <NewhouseForm onSubmit={handleSubmit} />
+        <NewhouseForm onSubmit={handleSubmit} showBackButton={false} />
         
-        <DialogFooter className="gap-3">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit" form="newhouse-form">
-            Create
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
