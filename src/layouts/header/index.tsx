@@ -17,7 +17,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between h-16 px-6">
         <div className="flex items-center gap-4">
           <button onClick={toggleSidebar} className="p-2 rounded-lg hover:bg-gray-100 transition-colors">

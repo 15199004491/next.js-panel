@@ -6,6 +6,8 @@ interface RouteConfig {
 export const routeConfigs: RouteConfig[] = [
   { path: '/newhouses', allowRegionSwitch: true },
   { path: '/developers', allowRegionSwitch: true },
+  { path: '/resale', allowRegionSwitch: true },
+  { path: '/rentals', allowRegionSwitch: true },
 ];
 
 export const isRegionSwitchAllowed = (currentPath: string): boolean => {
