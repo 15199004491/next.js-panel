@@ -6,8 +6,7 @@ This is a modern Real Estate Management System built with **Next.js + Tailwind C
 
 ### Live Demo
 
-- **Development**: http://localhost:3000
-- **Production**: [Deploy to Vercel](https://next-js-panel-tszd.vercel.app)
+- **Production**: https://next-js-panel-tszd.vercel.app/
 
 ### Technology Stack
 
