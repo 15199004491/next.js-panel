@@ -125,14 +125,6 @@ export function useGraphqlDevelopers() {
     async (id: string, input: UpdateDeveloperInput) => {
       const result = await updateDeveloperMut({
         variables: { id, input },
-        update(cache, { data }) {
-          if (!data) return;
-          cache.writeFragment({
-            id: cache.identify({ __typename: 'Developer', id }),
-            fragment: null,
-            data: data.updateDeveloper,
-          });
-        },
         refetchQueries: [{ query: GET_DEVELOPERS, variables: { page: 1, pageSize: 10 } }],
       });
       return result.data?.updateDeveloper;

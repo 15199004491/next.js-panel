@@ -5,7 +5,7 @@ import { useGraphqlDevelopers } from '@/src/modules/demo/hooks/useGraphqlDevelop
 import { DemoTable } from '@/src/modules/demo/components/DemoTable';
 import { DeveloperModal } from '@/src/modules/demo/components/DeveloperModal';
 import { Card, CardContent } from '@/src/ui/card';
-import { CheckCircle2, AlertCircle, GraphQL } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Hexagon } from 'lucide-react';
 
 const GRAPHQL_CODE_SNIPPET = `// GraphQL with Apollo Client
 // Query: Fetch list with pagination and filtering
@@ -148,7 +148,7 @@ export function GraphqlDemo() {
         <CardContent className="p-4">
           <div className="flex items-center gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <GraphQL className="w-4 h-4 text-pink-500" />
+              <Hexagon className="w-4 h-4 text-pink-500" />
               <span className="font-medium">GraphQL (Apollo Client)</span>
             </div>
             <div className="flex items-center gap-1 text-muted-foreground">

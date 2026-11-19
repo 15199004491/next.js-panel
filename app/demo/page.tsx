@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Server, Database, ArrowRightLeft, BookOpen, Zap, Layers } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/ui/card';
+import { Badge } from '@/src/ui/badge';
 import { RestDemo } from '@/src/modules/demo/components/RestDemo';
 import { GraphqlDemo } from '@/src/modules/demo/components/GraphqlDemo';
 
